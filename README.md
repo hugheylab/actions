@@ -1,2 +1,3 @@
 # actions
-Actions definitions for GitHub Actions
+
+Definitions and actions to be used with Hughey Lab GitHub Actions workflows.
