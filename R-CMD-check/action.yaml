@@ -1,0 +1,45 @@
+name: 'R-CMD-check'
+description: 'Action to run R CMD check on a matrix of operating systems.'
+author: 'Josh Schoenbachler'
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v2
+
+    - uses: r-lib/actions/setup-pandoc@v1
+
+    - uses: r-lib/actions/setup-r@v1
+      with:
+        r-version: ${{ matrix.config.r }}
+        http-user-agent: ${{ matrix.config.http-user-agent }}
+        use-public-rspm: true
+
+    - uses: r-lib/actions/setup-r-dependencies@v1
+      with:
+        extra-packages: rcmdcheck
+
+    - name: Install CDF packages for vignettes
+      run: |
+        source("R/metapredict_utils.R")
+        installCustomCdfPackages(c("hgu95av2hsentrezgcdf", "hgu133plus2hsentrezgcdf"))
+      shell: Rscript {0}
+
+    - name: Check
+      env:
+        _R_CHECK_CRAN_INCOMING_: false
+      run: |
+        options(crayon.enabled = TRUE)
+        rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran", "--no-vignettes", "--no-build-vignettes", "--no-tests"), build_args = c("--no-build-vignettes"), error_on = "error", check_dir = "check")
+      shell: Rscript {0}
+
+    - name: Show testthat output
+      if: always()
+      run: find check -name 'testthat.Rout*' -exec cat '{}' \; || true
+      shell: bash
+
+    - name: Upload check results
+      if: failure()
+      uses: actions/upload-artifact@main
+      with:
+        name: ${{ runner.os }}-r${{ matrix.config.r }}-results
+        path: check

@@ -1,0 +1,1 @@
+Action to run `R CMD check` on a matrix of operating systems.

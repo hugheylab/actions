@@ -1,0 +1,1 @@
+Action to run tests and upload to codecov.
