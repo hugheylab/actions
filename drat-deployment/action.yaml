@@ -1,5 +1,5 @@
-name: 'R-CMD-check'
-description: 'Action to run R CMD check on a matrix of operating systems.'
+name: 'drat-deploy'
+description: 'Action to conditionally deploy to drat if package does not match with drat.'
 author: 'Josh Schoenbachler'
 runs:
   using: "composite"
@@ -104,6 +104,6 @@ runs:
           -e "drat::insertPackage('../${PKG_TARBALL}', '.')"
         git add src/contrib/
         git commit -m "Updated to ${PKG_NAME} ${PKG_VERSION} via GitHub Actions"
-        git push -q https://jakejh:${GITHUB_PAT}@github.com/hugheylab/drat.git
+        # git push -q https://jakejh:${GITHUB_PAT}@github.com/hugheylab/drat.git
       fi
     shell: bash
