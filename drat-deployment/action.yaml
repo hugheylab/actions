@@ -27,9 +27,10 @@ runs:
 
   - name: Set environmental variables
     run: |
-      dsc = read.dcf("DESCRIPTION")
-      system(sprintf("echo \"PKG_VERSION=%s\" >> ${GITHUB_ENV}", dsc[,"Version"]))
-      system(sprintf("echo \"PKG_TARBALL=%s_%s.tar.gz\" >> ${GITHUB_ENV}", dsc[,"Package"], dsc[,"Version"]))
+      dsc = read.dcf('DESCRIPTION')
+      s = sprintf('echo \"PKG_VERSION=%s\nPKG_TARBALL=%s_%s.tar.gz\" >> ${GITHUB_ENV}',
+                  dsc[, 'Version'], dsc[, 'Package'], dsc[, 'Version'])
+      system(s)
     shell: Rscript {0}
 
   - name: Checkout drat repo
@@ -44,10 +45,10 @@ runs:
       cd drat
       FILE=src/contrib/${PKG_TARBALL}
       echo "File: ${FILE}."
-      DEPLOY_TARBALL=true
+      DEPLOY=true
       if test -f "${FILE}"
       then
-        echo "Package tarball of current version exists on drat repo."
+        echo "Current version of package is on drat repo."
         mkdir ../tmpDirNew
         tar xvzf "../${PKG_TARBALL}" -C ../tmpDirNew/
         sed -i '/DESCRIPTION$/d' ../tmpDirNew/${PKG_NAME}/MD5
@@ -79,15 +80,15 @@ runs:
           echo "SHA_DESC_OLD: ${SHA_DESC_OLD}"
           cd ../tmpDirNew
           SHA_TARBALL_NEW=$(sha256sum ${PKG_NAME}/MD5)
-          echo "SHATAR1: ${SHA_TARBALL_NEW}"
+          echo "SHA_TARBALL_NEW: ${SHA_TARBALL_NEW}"
           cd ../tmpDirOld
           SHA_TARBALL_OLD=$(sha256sum ${PKG_NAME}/MD5)
-          echo "SHATAR2: ${SHA_TARBALL_OLD}"
+          echo "SHA_TARBALL_OLD: ${SHA_TARBALL_OLD}"
           cd ../drat
           if [ "${SHA_TARBALL_OLD}" = "${SHA_TARBALL_NEW}" ] && [ "${SHA_DESC_NEW}" = "${SHA_DESC_OLD}" ]
           then
             echo "SHAs match, not deploying."
-            DEPLOY_TARBALL=false
+            DEPLOY=false
           else
             echo "SHAs don't match, deploying."
           fi
@@ -95,9 +96,9 @@ runs:
           echo "No MD5 file found, deploying."
         fi
       else
-        echo "No tarball of current version exists on drat repo, deploying."
+        echo "Current version of package is not on drat repo, deploying."
       fi
-      if [ ${DEPLOY_TARBALL} = true ]
+      if [ ${DEPLOY} = true ]
       then
         echo "Deploying."
         cd ../drat
