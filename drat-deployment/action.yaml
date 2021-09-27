@@ -1,6 +1,10 @@
 name: 'drat-deploy'
 description: 'Action to conditionally deploy to drat if package does not match with drat.'
 author: 'Josh Schoenbachler'
+inputs:
+  personal-token:
+    description: 'Personal token to be used for drat repo.'
+    required: true
 runs:
   using: "composite"
   steps:
@@ -33,7 +37,7 @@ runs:
     with:
       repository: hugheylab/drat
       path: drat
-      token: ${{ secrets.JAKEJH_PAT }}
+      token: ${{ inputs.personal-token }}
       
   - name: Check to deploy
     run: |
@@ -104,6 +108,6 @@ runs:
           -e "drat::insertPackage('../${PKG_TARBALL}', '.')"
         git add src/contrib/
         git commit -m "Updated to ${PKG_NAME} ${PKG_VERSION} via GitHub Actions"
-        # git push -q https://jakejh:${GITHUB_PAT}@github.com/hugheylab/drat.git
+        # git push -q https://jakejh:${{ inputs.personal-token }}@github.com/hugheylab/drat.git
       fi
     shell: bash
