@@ -109,6 +109,6 @@ runs:
           -e "drat::insertPackage('../${PKG_TARBALL}', '.')"
         git add src/contrib/
         git commit -m "Updated to ${PKG_NAME} ${PKG_VERSION} via GitHub Actions"
-        # git push -q https://jakejh:${{ inputs.personal-token }}@github.com/hugheylab/drat.git
+        git push -q https://jakejh:${{ inputs.personal-token }}@github.com/hugheylab/drat.git
       fi
     shell: bash
