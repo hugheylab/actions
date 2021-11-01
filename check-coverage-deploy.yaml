@@ -34,7 +34,8 @@ jobs:
   drat-deployment:
     needs: [R-CMD-check, test-coverage]
     runs-on: ubuntu-latest
-    if: ${{ endswith(github.ref, '/master') || endswith(github.ref, '/main') }}
+    # if: ${{ endswith(github.ref, '/master') || endswith(github.ref, '/main') }}
+    if: ${{ false }}
     env:
       GITHUB_PAT: ${{ secrets.JAKEJH_PAT }}
       PKG_NAME: ${{ github.event.repository.name }}
