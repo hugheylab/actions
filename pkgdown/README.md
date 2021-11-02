@@ -1,0 +1,1 @@
+Action to build the pkgdown site and deploy to the `gh-pages` branch.
