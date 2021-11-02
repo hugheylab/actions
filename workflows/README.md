@@ -1,0 +1,1 @@
+These files should be placed in the `.github/workflows` directory of all lab R packages to configure GitHub Actions.
