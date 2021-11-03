@@ -29,6 +29,12 @@ runs:
       rm expression_data.tar.gz
       cd ../
     shell: bash
+  
+  - name: Install CDF packages for vignettes
+    run: |
+      source("R/metapredict_utils.R")
+      installCustomCdfPackages(c("hgu95av2hsentrezgcdf", "hgu133plus2hsentrezgcdf"))
+    shell: Rscript {0}
 
   - name: Build Package
     run: |
