@@ -49,8 +49,7 @@ runs:
 
         mkdir -p ~/genomes
         refgenie init -c ~/genomes/genome_config.yaml
-        echo 'export REFGENIE="${HOME}/genomes/genome_config.yaml"' >> ~/.bashrc
-        echo 'export REFGENIE="${HOME}/genomes/genome_config.yaml"' >> ~/.profile
+        echo 'export REFGENIE="${HOME}/genomes/genome_config.yaml"'
 
         refgenie pull mm10/salmon_partial_sa_index
       shell: bash
