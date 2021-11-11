@@ -49,9 +49,10 @@ runs:
 
         mkdir -p ~/genomes
         refgenie init -c ~/genomes/genome_config.yaml
-        echo 'export REFGENIE="${HOME}/genomes/genome_config.yaml"'
+        echo 'export REFGENIE="${HOME}/genomes/genome_config.yaml"' >> ${GITHUB_ENV}
+        
 
-        refgenie pull mm10/salmon_partial_sa_index
+        refgenie pull mm10/salmon_partial_sa_index --genome-config ~/genomes/genome_config.yaml
       shell: bash
 
     - name: Test coverage
