@@ -20,6 +20,16 @@ runs:
 
   - uses: r-lib/actions/setup-r-dependencies@v1
 
+  - name: Download test data folder
+    run: |
+      cd tests/testthat/test_data
+      wget "https://www.dropbox.com/s/z6idgjm3zccrf3f/GSE143524.tar.gz?dl=1"
+      mv GSE143524.tar.gz?dl=1 GSE143524.tar.gz
+      tar -xf GSE143524.tar.gz
+      rm GSE143524.tar.gz
+      cd ../../../
+    shell: bash
+
   - name: Build Package
     run: |
       R CMD build . --md5

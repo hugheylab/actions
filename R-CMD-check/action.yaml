@@ -18,6 +18,16 @@ runs:
       with:
         extra-packages: rcmdcheck
 
+    - name: Download test data folder
+      run: |
+        cd tests/testthat/test_data
+        wget "https://www.dropbox.com/s/z6idgjm3zccrf3f/GSE143524.tar.gz?dl=1"
+        mv GSE143524.tar.gz?dl=1 GSE143524.tar.gz
+        tar -xf GSE143524.tar.gz
+        rm GSE143524.tar.gz
+        cd ../../../
+      shell: bash
+
     - uses: r-lib/actions/check-r-package@v1
 
     - name: Show testthat output
