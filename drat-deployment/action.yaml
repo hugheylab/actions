@@ -28,8 +28,8 @@ runs:
   - name: Set environmental variables
     run: |
       dsc = read.dcf('DESCRIPTION')
-      s = sprintf('echo \"PKG_VERSION=%s\nPKG_TARBALL=%s_%s.tar.gz\" >> ${GITHUB_ENV}',
-                  dsc[, 'Version'], dsc[, 'Package'], dsc[, 'Version'])
+      s = sprintf('echo \"PKG_VERSION=%s\nPKG_NAME=%s\nPKG_TARBALL=%s_%s.tar.gz\" >> ${GITHUB_ENV}',
+                  dsc[, 'Version'], dsc[, 'Package'], dsc[, 'Package'], dsc[, 'Version'])
       system(s)
     shell: Rscript {0}
 
