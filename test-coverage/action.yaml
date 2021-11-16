@@ -14,16 +14,6 @@ runs:
       with:
         extra-packages: covr
 
-    - name: Download test data folder
-      run: |
-        cd tests/testthat/test_data
-        wget "https://www.dropbox.com/s/z6idgjm3zccrf3f/GSE143524.tar.gz?dl=1"
-        mv GSE143524.tar.gz?dl=1 GSE143524.tar.gz
-        tar -xf GSE143524.tar.gz
-        rm GSE143524.tar.gz
-        cd ../../../
-      shell: bash
-
     - name: Setup environment
       run: |
         wget https://d3gcli72yxqn2z.cloudfront.net/connect_latest/v4/bin/ibm-aspera-connect_4.1.0.46-linux_x86_64.tar.gz
