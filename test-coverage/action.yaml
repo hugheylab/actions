@@ -15,7 +15,7 @@ runs:
         extra-packages: covr
 
     - name: Setup environment
-      run: ${{ github.action_path }}/setup_seeker.sh
+      run: setup_seeker.sh
       shell: bash
 
     - name: Test coverage
