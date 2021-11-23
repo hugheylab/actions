@@ -18,7 +18,35 @@ runs:
       with:
         extra-packages: rcmdcheck
 
-    - name: Setup environment
+    - name: Setup environment Mac
+      if: ${{ matrix.config.os == 'macOS-latest' }}
+      run: |
+        wget https://download.asperasoft.com/download/sw/connect/3.8.0/IBMAsperaConnectInstallerSystemWide-3.8.0.158555.dmg
+        sudo hdiutil attach IBMAsperaConnectInstallerSystemWide-3.8.0.158555.dmg
+        sudo installer -package '/Volumes/Aspera Connect Installer/IBMAsperaConnectInstallerSystemWide.pkg' -target /Applications
+        sudo hdiutil unmount '/Volumes/Aspera Connect Installer'
+
+        curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
+        sh Miniconda3-latest-MacOSX-x86_64.sh
+
+        conda config --add channels defaults
+        conda config --add channels bioconda
+        conda config --add channels conda-forge
+
+        conda install mamba -c conda-forge
+
+        mamba install refgenie trim-galore fastqc fastq-screen salmon multiqc
+
+        mkdir -p ~/genomes
+        refgenie init -c ~/genomes/genome_config.yaml
+        echo 'export REFGENIE="${HOME}/genomes/genome_config.yaml"' >> ${GITHUB_ENV}
+
+        refgenie pull mm10/salmon_partial_sa_index --genome-config ~/genomes/genome_config.yaml
+
+      shell: bash
+
+    - name: Setup environment Linux
+      if: ${{ matrix.config.os == 'ubuntu-latest' }}
       run: |
         wget https://d3gcli72yxqn2z.cloudfront.net/connect_latest/v4/bin/ibm-aspera-connect_4.1.0.46-linux_x86_64.tar.gz
         tar -zxvf ibm-aspera-connect_4.1.0.46-linux_x86_64.tar.gz
