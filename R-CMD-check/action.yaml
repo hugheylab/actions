@@ -21,6 +21,7 @@ runs:
     - name: Setup environment Mac
       if: ${{ matrix.config.os == 'macOS-latest' }}
       run: |
+        mkdir ~/Applications
         wget https://download.asperasoft.com/download/sw/connect/3.8.0/IBMAsperaConnectInstallerSystemWide-3.8.0.158555.dmg
         sudo hdiutil attach IBMAsperaConnectInstallerSystemWide-3.8.0.158555.dmg
         sudo installer -package '/Volumes/Aspera Connect Installer/IBMAsperaConnectInstallerSystemWide.pkg' -target ~/Applications
