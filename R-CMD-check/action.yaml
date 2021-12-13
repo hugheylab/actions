@@ -54,7 +54,7 @@ runs:
     - name: Setup environment Linux
       if: ${{ matrix.config.os == 'ubuntu-latest' }}
       run: |
-        wget https://d3gcli72yxqn2z.cloudfront.net/connect_latest/v4/bin/ibm-aspera-connect_4.1.0.46-linux_x86_64.tar.gz
+        wget https://d3gcli72yxqn2z.cloudfront.net/connect_latest/v4/bin/ibm-aspera-connect_4.1.1.73_linux.tar.gz
         tar -zxvf ibm-aspera-connect_4.1.0.46-linux_x86_64.tar.gz
         ./ibm-aspera-connect_4.1.0.46-linux_x86_64.sh
         rm ibm-aspera-connect*
