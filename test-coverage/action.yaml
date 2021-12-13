@@ -16,9 +16,9 @@ runs:
 
     - name: Setup environment
       run: |
-        wget https://d3gcli72yxqn2z.cloudfront.net/connect_latest/v4/bin/ibm-aspera-connect_4.1.0.46-linux_x86_64.tar.gz
-        tar -zxvf ibm-aspera-connect_4.1.0.46-linux_x86_64.tar.gz
-        ./ibm-aspera-connect_4.1.0.46-linux_x86_64.sh
+        wget https://d3gcli72yxqn2z.cloudfront.net/connect_latest/v4/bin/ibm-aspera-connect_4.1.1.73_linux.tar.gz
+        tar -zxvf ibm-aspera-connect_4.1.1.73_linux.tar.gz
+        ./ibm-aspera-connect_4.1.1.73_linux.sh
         rm ibm-aspera-connect*
 
         wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
