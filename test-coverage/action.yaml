@@ -16,6 +16,9 @@ runs:
 
     - name: Setup environment
       run: |
+        # If below command fails due to not finding aspera connect version, go to
+        # https://www.ibm.com/aspera/connect/
+        # Replace below link and aspera connect version with links from site.
         wget https://d3gcli72yxqn2z.cloudfront.net/connect_latest/v4/bin/ibm-aspera-connect_4.1.1.73_linux.tar.gz
         tar -zxvf ibm-aspera-connect_4.1.1.73_linux.tar.gz
         ./ibm-aspera-connect_4.1.1.73_linux.sh
