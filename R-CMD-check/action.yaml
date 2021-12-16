@@ -29,7 +29,7 @@ runs:
         # sudo installer -package '/Volumes/Aspera Connect Installer/IBMAsperaConnectInstallerSystemWide.pkg' -target /Applications
         # sudo hdiutil unmount '/Volumes/Aspera Connect Installer'
 
-        sudo brew install ruby
+        brew install ruby
         sudo gem install aspera-cli
         sudo gem update aspera-cli
 
