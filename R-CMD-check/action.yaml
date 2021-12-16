@@ -24,9 +24,22 @@ runs:
         # If below command fails due to not finding aspera connect version, go to
         # https://www.ibm.com/aspera/connect/
         # Replace below link and aspera connect version with links from site.
-        wget https://download.asperasoft.com/download/sw/connect/3.8.0/IBMAsperaConnectInstallerSystemWide-3.8.0.158555.dmg
-        sudo hdiutil attach IBMAsperaConnectInstallerSystemWide-3.8.0.158555.dmg
-        sudo installer -package '/Volumes/Aspera Connect Installer/IBMAsperaConnectInstallerSystemWide.pkg' -target /Applications
+        # wget https://download.asperasoft.com/download/sw/connect/3.8.0/IBMAsperaConnectInstallerSystemWide-3.8.0.158555.dmg
+        # sudo hdiutil attach IBMAsperaConnectInstallerSystemWide-3.8.0.158555.dmg
+        # sudo installer -package '/Volumes/Aspera Connect Installer/IBMAsperaConnectInstallerSystemWide.pkg' -target /Applications
+        # sudo hdiutil unmount '/Volumes/Aspera Connect Installer'
+
+        sudo apt-get install ruby-full
+        sudo gem install aspera-cli
+        sudo gem update aspera-cli
+
+        ascli conf ascp install
+
+        DOWNOUT=$(ascli config ascp connect id 'Aspera Connect for Mac Intel' links id 'Mac Intel Installer' download --to-folder=.)
+        CONNECTDMG=$(echo $DOWNOUT | awk '{ print substr($0, match($0, "IBMAspera"));}')
+        sudo hdiutil attach $CONNECTDMG
+        sudo ls -a '/Volumes/Aspera Connect Installer'
+        sudo installer -package '/Volumes/Aspera Connect Installer/IBMAsperaConnectInstaller.pkg' -target /Applications
         sudo hdiutil unmount '/Volumes/Aspera Connect Installer'
 
         wget https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
