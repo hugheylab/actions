@@ -73,7 +73,7 @@ runs:
 
         DOWNOUT=$(ascli config ascp connect id 'Aspera Connect for Linux 64' links id 'Linux 64-bit Installer' download --to-folder=.)
         echo "$DOWNOUT"
-        CONNECTTAR=$(awk '{ sub(/.*\\n.*Downloaded: /, ""); print }' <<< "$DOWNOUT")
+        CONNECTTAR=$(echo $DOWNLOADOUT | awk '{ print substr($0, match($0, "ibm-aspera"));}')
         echo "$CONNECTTAR"
         CONNECTSH=$(awk '{ sub(/\.tar\.gz/, ".sh"); print }' <<< "$CONNECTTAR")
         echo "$CONNECTSH"
