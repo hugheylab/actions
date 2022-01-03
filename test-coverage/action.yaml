@@ -25,8 +25,9 @@ runs:
         # rm ibm-aspera-connect*
 
         sudo apt-get install ruby-full
-        sudo gem install aspera-cli
-        sudo gem update aspera-cli
+        # Currently using v4.4.0 due to binary bug in 4.5.0
+        sudo gem install aspera-cli -v 4.4.0
+        # sudo gem update aspera-cli
 
         ascli conf ascp install
 
