@@ -24,24 +24,24 @@ runs:
         # If below command fails due to not finding aspera connect version, go to
         # https://www.ibm.com/aspera/connect/
         # Replace below link and aspera connect version with links from site.
-        wget https://download.asperasoft.com/download/sw/connect/3.8.0/IBMAsperaConnectInstallerSystemWide-3.8.0.158555.dmg
-        sudo hdiutil attach IBMAsperaConnectInstallerSystemWide-3.8.0.158555.dmg
-        sudo installer -package '/Volumes/Aspera Connect Installer/IBMAsperaConnectInstallerSystemWide.pkg' -target /Applications
-        sudo hdiutil unmount '/Volumes/Aspera Connect Installer'
+        # wget https://download.asperasoft.com/download/sw/connect/3.8.0/IBMAsperaConnectInstallerSystemWide-3.8.0.158555.dmg
+        # sudo hdiutil attach IBMAsperaConnectInstallerSystemWide-3.8.0.158555.dmg
+        # sudo installer -package '/Volumes/Aspera Connect Installer/IBMAsperaConnectInstallerSystemWide.pkg' -target /Applications
+        # sudo hdiutil unmount '/Volumes/Aspera Connect Installer'
 
-        # brew install ruby
+        brew install ruby
         # Currently using v4.4.0 due to binary bug in 4.5.0
-        # sudo gem install aspera-cli -v 4.4.0
+        sudo gem install aspera-cli -v 4.4.0
         # sudo gem update aspera-cli
 
-        # ascli conf ascp install
+        ascli conf ascp install
 
-        # DOWNOUT=$(ascli config ascp connect id 'Aspera Connect for Mac Intel' links id 'Mac Intel Installer' download --to-folder=.)
-        # CONNECTDMG=$(echo $DOWNOUT | awk '{ print substr($0, match($0, "IBMAspera"));}')
-        # sudo hdiutil attach $CONNECTDMG
-        # sudo ls -a '/Volumes/Aspera Connect Installer'
-        # sudo installer -package '/Volumes/Aspera Connect Installer/IBMAsperaConnectInstaller.pkg' -target /Applications
-        # sudo hdiutil unmount '/Volumes/Aspera Connect Installer'
+        DOWNOUT=$(ascli config ascp connect id 'Aspera Connect for Mac Intel' links id 'Mac Intel Installer' download --to-folder=.)
+        CONNECTDMG=$(echo $DOWNOUT | awk '{ print substr($0, match($0, "IBMAspera"));}')
+        sudo hdiutil attach $CONNECTDMG
+        sudo ls -a '/Volumes/Aspera Connect Installer'
+        sudo installer -package '/Volumes/Aspera Connect Installer/IBMAsperaConnectInstaller.pkg' -target /Applications
+        sudo hdiutil unmount '/Volumes/Aspera Connect Installer'
 
         wget https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
         sh Miniconda3-latest-MacOSX-x86_64.sh -b -p ~/miniconda3
@@ -74,24 +74,24 @@ runs:
         # If below command fails due to not finding aspera connect version, go to
         # https://www.ibm.com/aspera/connect/
         # Replace below link and aspera connect version with links from site.
-        wget https://d3gcli72yxqn2z.cloudfront.net/connect_latest/v4/bin/ibm-aspera-connect_4.1.1.73_linux.tar.gz
-        tar -zxvf ibm-aspera-connect_4.1.1.73_linux.tar.gz
-        ./ibm-aspera-connect_4.1.1.73_linux.sh
-        rm ibm-aspera-connect*
+        # wget https://d3gcli72yxqn2z.cloudfront.net/connect_latest/v4/bin/ibm-aspera-connect_4.1.1.73_linux.tar.gz
+        # tar -zxvf ibm-aspera-connect_4.1.1.73_linux.tar.gz
+        # ./ibm-aspera-connect_4.1.1.73_linux.sh
+        # rm ibm-aspera-connect*
 
-        # sudo apt-get install ruby-full
+        sudo apt-get install ruby-full
         # Currently using v4.4.0 due to binary bug in 4.5.0
-        # sudo gem install aspera-cli -v 4.4.0
+        sudo gem install aspera-cli -v 4.4.0
         # sudo gem update aspera-cli
 
-        # ascli conf ascp install
+        ascli conf ascp install
 
-        # DOWNOUT=$(ascli config ascp connect id 'Aspera Connect for Linux 64' links id 'Linux 64-bit Installer' download --to-folder=.)
-        # CONNECTTAR=$(echo $DOWNOUT | awk '{ print substr($0, match($0, "ibm-aspera"));}')
-        # CONNECTSH=$(awk '{ sub(/\.tar\.gz/, ".sh"); print }' <<< "$CONNECTTAR")
-        # tar -zxvf $CONNECTTAR
-        # ./$CONNECTSH
-        # rm ibm-aspera-connect*
+        DOWNOUT=$(ascli config ascp connect id 'Aspera Connect for Linux 64' links id 'Linux 64-bit Installer' download --to-folder=.)
+        CONNECTTAR=$(echo $DOWNOUT | awk '{ print substr($0, match($0, "ibm-aspera"));}')
+        CONNECTSH=$(awk '{ sub(/\.tar\.gz/, ".sh"); print }' <<< "$CONNECTTAR")
+        tar -zxvf $CONNECTTAR
+        ./$CONNECTSH
+        rm ibm-aspera-connect*
 
         wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
         sh Miniconda3-latest-Linux-x86_64.sh -b -p ~/miniconda3
