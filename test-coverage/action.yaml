@@ -19,24 +19,24 @@ runs:
         # If below command fails due to not finding aspera connect version, go to
         # https://www.ibm.com/aspera/connect/
         # Replace below link and aspera connect version with links from site.
-        # wget https://d3gcli72yxqn2z.cloudfront.net/connect_latest/v4/bin/ibm-aspera-connect_4.1.1.73_linux.tar.gz
-        # tar -zxvf ibm-aspera-connect_4.1.1.73_linux.tar.gz
-        # ./ibm-aspera-connect_4.1.1.73_linux.sh
-        # rm ibm-aspera-connect*
+        wget https://d3gcli72yxqn2z.cloudfront.net/connect_latest/v4/bin/ibm-aspera-connect_4.1.1.73_linux.tar.gz
+        tar -zxvf ibm-aspera-connect_4.1.1.73_linux.tar.gz
+        ./ibm-aspera-connect_4.1.1.73_linux.sh
+        rm ibm-aspera-connect*
 
-        sudo apt-get install ruby-full
+        # sudo apt-get install ruby-full
         # Currently using v4.4.0 due to binary bug in 4.5.0
-        sudo gem install aspera-cli -v 4.4.0
+        # sudo gem install aspera-cli -v 4.4.0
         # sudo gem update aspera-cli
 
-        ascli conf ascp install
+        # ascli conf ascp install
 
-        DOWNOUT=$(ascli config ascp connect id 'Aspera Connect for Linux 64' links id 'Linux 64-bit Installer' download --to-folder=.)
-        CONNECTTAR=$(echo $DOWNOUT | awk '{ print substr($0, match($0, "ibm-aspera"));}')
-        CONNECTSH=$(awk '{ sub(/\.tar\.gz/, ".sh"); print }' <<< "$CONNECTTAR")
-        tar -zxvf $CONNECTTAR
-        ./$CONNECTSH
-        rm ibm-aspera-connect*
+        # DOWNOUT=$(ascli config ascp connect id 'Aspera Connect for Linux 64' links id 'Linux 64-bit Installer' download --to-folder=.)
+        # CONNECTTAR=$(echo $DOWNOUT | awk '{ print substr($0, match($0, "ibm-aspera"));}')
+        # CONNECTSH=$(awk '{ sub(/\.tar\.gz/, ".sh"); print }' <<< "$CONNECTTAR")
+        # tar -zxvf $CONNECTTAR
+        # ./$CONNECTSH
+        # rm ibm-aspera-connect*
 
         wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
         sh Miniconda3-latest-Linux-x86_64.sh -b -p ~/miniconda3
