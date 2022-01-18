@@ -1,0 +1,31 @@
+name: 'analysis-workflowr'
+description: 'Action to run workflowr on analysis scripts.'
+author: 'Josh Schoenbachler'
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v2
+
+    - name: Switch git branch
+      run:
+        git checkout "gh-pages"
+      shell: Bash
+
+    - uses: r-lib/actions/setup-r@v1
+      with:
+        use-public-rspm: true
+
+    - uses: r-lib/actions/setup-r-dependencies@v1
+      with:
+        extra-packages: withr
+
+    - name: Build and publish
+      run: 
+        workflowr::wflow_build()
+        workflowr::wflow_publish()
+      shell: Rscript {0}
+
+    - name: Commit to "gh-pages"
+      run:
+        git commit -m "Updated workflowr site via GitHub Actions"
+        git push
