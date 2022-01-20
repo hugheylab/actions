@@ -12,9 +12,12 @@ runs:
       with:
         use-public-rspm: true
 
+    - name: Install workflowr
+      run: |
+        install.packages("workflowr")
+      shell: Rscript {0}
+
     - uses: r-lib/actions/setup-r-dependencies@v2
-      with:
-        extra-packages: git2r, workflowr
 
     - name: Switch git branch
       run: |
