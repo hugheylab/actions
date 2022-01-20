@@ -6,11 +6,7 @@ runs:
   steps:
     - uses: actions/checkout@v2
 
-    - name: Switch git branch
-      run: |
-        git pull
-        git switch "gh-pages"
-      shell: bash
+    - uses: r-lib/actions/setup-pandoc@v1
 
     - uses: r-lib/actions/setup-r@v1
       with:
@@ -20,6 +16,12 @@ runs:
       with:
         extra-packages: workflowr
 
+    - name: Switch git branch
+      run: |
+        git pull
+        git switch "gh-pages"
+      shell: bash
+
     - name: Build and publish
       run: |
         workflowr::wflow_build()
@@ -28,6 +30,8 @@ runs:
 
     - name: Commit to "gh-pages"
       run: |
+        git config --local user.name "$GITHUB_ACTOR"
+        git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
         git commit -m "Updated workflowr site via GitHub Actions"
         git push
       shell: bash
