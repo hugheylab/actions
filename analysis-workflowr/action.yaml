@@ -9,7 +9,7 @@ runs:
     - name: Switch git branch
       run:
         git checkout "gh-pages"
-      shell: Bash
+      shell: bash
 
     - uses: r-lib/actions/setup-r@v1
       with:
@@ -29,4 +29,4 @@ runs:
       run:
         git commit -m "Updated workflowr site via GitHub Actions"
         git push
-      shell: Bash
+      shell: bash
