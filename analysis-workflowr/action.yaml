@@ -14,21 +14,22 @@ runs:
 
     - uses: r-lib/actions/setup-r-dependencies@v2
       with:
-        extra-packages: workflowr
+        extra-packages: git2r, workflowr
 
     - name: Switch git branch
       run: |
+        git config --local user.name "$GITHUB_ACTOR"
+        git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
         git pull
         git switch "gh-pages"
       shell: bash
 
     - name: Build and publish
       run: |
-        # library("workflowr")
-        # wflow_git_config(user.name = "$GITHUB_ACTOR", user.email = "$GITHUB_ACTOR@users.noreply.github.com")
+        workflowr::wflow_git_config()
         workflowr::wflow_build()
         fileNames = paste0("analysis/", list.files("analysis")[grepl("*.Rmd", list.files("analysis"))])
-        # wflow_publish(files = fileNames)
+        workflowr::wflow_publish(files = fileNames)
       shell: Rscript {0}
 
     - name: Commit to "gh-pages"
