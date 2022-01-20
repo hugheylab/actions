@@ -12,11 +12,9 @@ runs:
       with:
         use-public-rspm: true
 
-    - name: Install dependencies to avoid trying to build package
-      run: |
-        install.packages(c("devtools", "workflowr"), repos = "https://cran.rstudio.com")
-        devtools::install_dev_deps()
-      shell: Rscript {0}
+    - uses: r-lib/actions/setup-r-dependencies@v1
+      with:
+        extra-packages: workflowr
 
     - name: Switch git branch
       run: |
