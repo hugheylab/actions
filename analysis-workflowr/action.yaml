@@ -29,5 +29,11 @@ runs:
         workflowr::wflow_build()
         fileNames = paste0("analysis/", list.files("analysis")[grepl("*.Rmd", list.files("analysis"))])
         workflowr::wflow_publish(files = fileNames)
-        workflowr::wflow_git_push()
       shell: Rscript {0}
+
+    - name: Commit to "gh-pages"
+      run: |
+        git config --local user.name "$GITHUB_ACTOR"
+        git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
+        git push
+      shell: bash
