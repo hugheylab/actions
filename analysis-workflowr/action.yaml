@@ -14,7 +14,7 @@ runs:
 
     - name: Install workflowr
       run: |
-        install.packages("workflowr")
+        install.packages("workflowr", repos = "http://cran.us.r-project.org")
       shell: Rscript {0}
 
     - uses: r-lib/actions/setup-r-dependencies@v2
