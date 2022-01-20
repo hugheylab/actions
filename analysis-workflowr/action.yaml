@@ -8,7 +8,8 @@ runs:
 
     - name: Switch git branch
       run:
-        git checkout "gh-pages"
+        git pull
+        git switch "gh-pages"
       shell: bash
 
     - uses: r-lib/actions/setup-r@v1
