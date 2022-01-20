@@ -7,7 +7,7 @@ runs:
     - uses: actions/checkout@v2
 
     - name: Switch git branch
-      run:
+      run: |
         git pull
         git switch "gh-pages"
       shell: bash
@@ -21,13 +21,13 @@ runs:
         extra-packages: withr
 
     - name: Build and publish
-      run: 
+      run: |
         workflowr::wflow_build()
         workflowr::wflow_publish()
       shell: Rscript {0}
 
     - name: Commit to "gh-pages"
-      run:
+      run: |
         git commit -m "Updated workflowr site via GitHub Actions"
         git push
       shell: bash
