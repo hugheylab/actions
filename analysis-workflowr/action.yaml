@@ -25,9 +25,9 @@ runs:
     - name: Build and publish
       run: |
         library(workflowr)
-        wflow_git_config(user.name = "GitHub Action", user.email = "action@github.com")
+        # wflow_git_config(user.name = "GitHub Action", user.email = "action@github.com")
         wflow_build()
-        wflow_publish()
+        # wflow_publish()
       shell: Rscript {0}
 
     - name: Commit to "gh-pages"
