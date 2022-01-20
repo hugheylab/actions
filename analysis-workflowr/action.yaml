@@ -28,7 +28,7 @@ runs:
         workflowr::wflow_git_config()
         workflowr::wflow_build()
         fileNames = paste0("analysis/", list.files("analysis")[grepl("*.Rmd", list.files("analysis"))])
-        workflowr::wflow_publish(files = fileNames)
+        workflowr::wflow_publish(republish = TRUE)
       shell: Rscript {0}
 
     - name: Commit to "gh-pages"
