@@ -14,7 +14,7 @@ runs:
 
     - name: Install dependencies to avoid trying to build package
       run: |
-        install.packages(c("devtools", "workflowr"))
+        install.packages(c("devtools", "workflowr"), repos = "http://cran.us.r-project.org")
         devtools::install_dev_deps()
       shell: Rscript {0}
 
