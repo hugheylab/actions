@@ -29,3 +29,4 @@ runs:
       run:
         git commit -m "Updated workflowr site via GitHub Actions"
         git push
+      shell: Bash
