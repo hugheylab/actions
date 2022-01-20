@@ -12,11 +12,6 @@ runs:
       with:
         use-public-rspm: true
 
-    - name: Install workflowr
-      run: |
-        install.packages("workflowr", repos = "http://cran.us.r-project.org")
-      shell: Rscript {0}
-
     - uses: r-lib/actions/setup-r-dependencies@v2
 
     - name: Switch git branch
@@ -29,6 +24,7 @@ runs:
 
     - name: Build and publish
       run: |
+        install.packages("workflowr", repos = "http://cran.us.r-project.org")
         workflowr::wflow_git_config()
         workflowr::wflow_build()
         fileNames = paste0("analysis/", list.files("analysis")[grepl("*.Rmd", list.files("analysis"))])
