@@ -18,7 +18,7 @@ runs:
 
     - uses: r-lib/actions/setup-r-dependencies@v1
       with:
-        extra-packages: withr
+        extra-packages: workflowr
 
     - name: Build and publish
       run: |
