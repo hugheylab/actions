@@ -24,10 +24,10 @@ runs:
 
     - name: Build and publish
       run: |
-        library(workflowr)
+        library("workflowr")
         wflow_git_config(user.name = "$GITHUB_ACTOR", user.email = "$GITHUB_ACTOR@users.noreply.github.com")
         wflow_build()
-        fileNames = paste0('analysis/', list.files('analysis')[grepl("*.Rmd", list.files('analysis'))])
+        fileNames = paste0("analysis/", list.files("analysis")[grepl("*.Rmd", list.files("analysis"))])
         wflow_publish(files = fileNames)
       shell: Rscript {0}
 
