@@ -32,7 +32,7 @@ runs:
 
     - name: Commit to "gh-pages"
       run: |
-        git add /
+        git add ./
         git commit -m "Updated workflowr site via GitHub Actions"
         git push -f origin master:gh-pages
       shell: bash
