@@ -20,7 +20,7 @@ runs:
         git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
         git pull
         git checkout "gh-pages"
-        git merge -f master
+        git merge -X theirs master
       shell: bash
 
     - name: Build and publish
