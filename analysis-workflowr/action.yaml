@@ -14,15 +14,6 @@ runs:
 
     - uses: r-lib/actions/setup-r-dependencies@v2
 
-    - name: Switch git branch
-      run: |
-        git config --local user.name "$GITHUB_ACTOR"
-        git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
-        git pull
-        git switch "gh-pages"
-        git merge master
-      shell: bash
-
     - name: Build and publish
       run: |
         install.packages("workflowr", repos = "http://cran.us.r-project.org")
