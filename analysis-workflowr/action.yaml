@@ -37,5 +37,5 @@ runs:
         git add docs/
         git add DESCRIPTION
         git commit -m "Updated workflowr site via GitHub Actions"
-        git push origin master:gh-pages
+        git push -f origin master:gh-pages
       shell: bash
