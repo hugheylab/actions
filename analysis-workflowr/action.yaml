@@ -14,6 +14,12 @@ runs:
 
     - uses: r-lib/actions/setup-r-dependencies@v2
 
+    - name: Switch git branch
+      run: |
+        git config --local user.name "$GITHUB_ACTOR"
+        git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
+      shell: bash
+
     - name: Build and publish
       run: |
         install.packages("workflowr", repos = "http://cran.us.r-project.org")
@@ -26,8 +32,6 @@ runs:
 
     - name: Commit to "gh-pages"
       run: |
-        git config --local user.name "$GITHUB_ACTOR"
-        git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
         git add analysis/
         git add code/
         git add docs/
