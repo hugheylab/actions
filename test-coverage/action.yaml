@@ -26,10 +26,10 @@ runs:
 
         sudo apt-get install ruby-full
         # Currently using v4.4.0 due to binary bug in 4.5.0
-        # sudo gem install aspera-cli -v 4.4.0
-        # Testing the latest (v4.6.0) to see if previous bug is fixed.
-        sudo gem install aspera-cli
-        sudo gem update aspera-cli
+        sudo gem install aspera-cli -v 4.4.0
+        # The latest (v4.6.0) works differently than previous versions. Reverting for now while I debug and test.
+        # sudo gem install aspera-cli
+        # sudo gem update aspera-cli
 
         ascli conf ascp install
 
