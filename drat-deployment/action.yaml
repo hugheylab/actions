@@ -31,13 +31,12 @@ runs:
       # rm ibm-aspera-connect*
 
       sudo apt-get install ruby-full
-      # Currently using v4.4.0 due to binary bug in 4.5.0
-      sudo gem install aspera-cli -v 4.4.0
-      # sudo gem update aspera-cli
+      sudo gem install aspera-cli
+      sudo gem update aspera-cli
 
       ascli conf ascp install
 
-      DOWNOUT=$(ascli config ascp connect id 'Aspera Connect for Linux 64' links id 'Linux 64-bit Installer' download --to-folder=.)
+      DOWNOUT=$(ascli config ascp connect version 'Aspera Connect for Linux 64' download 'Linux 64-bit Installer')
       CONNECTTAR=$(echo $DOWNOUT | awk '{ print substr($0, match($0, "ibm-aspera"));}')
       CONNECTSH=$(awk '{ sub(/\.tar\.gz/, ".sh"); print }' <<< "$CONNECTTAR")
       tar -zxvf $CONNECTTAR
