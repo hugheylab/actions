@@ -30,6 +30,7 @@ runs:
         # sudo hdiutil unmount '/Volumes/Aspera Connect Installer'
 
         brew install ruby
+        brew install shared-mime-info
         sudo gem install aspera-cli
         sudo gem update aspera-cli
 
