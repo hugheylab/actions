@@ -25,12 +25,12 @@ runs:
       shell: bash
 
     - name: Create an issue
-      uses: JasonEtco/create-an-issue@v2.6.0
+      uses: JasonEtco/create-an-issue@v2
       env: 
         GITHUB_TOKEN: ${{ inputs.github_token }}
-        PACKAGE_NAME: "{{ steps.split-string.outputs.PACKAGE_NAME }}"
-        DRAT_VERSION: "{{ steps.split-string.outputs.DRAT_VERSION }}"
-        CRAN_VERSION: "{{ steps.split-string.outputs.CRAN_VERSION }}"
+        PACKAGE_NAME: ${{ steps.split-string.outputs.PACKAGE_NAME }}
+        DRAT_VERSION: ${{ steps.split-string.outputs.DRAT_VERSION }}
+        CRAN_VERSION: ${{ steps.split-string.outputs.CRAN_VERSION }}
 
 
     
