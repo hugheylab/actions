@@ -13,11 +13,11 @@ runs:
     - name: Split package_string
       id: split-string
       run: |
-        PACKAGE_NAME=$(echo ${{package_string}} | awk 'BEGIN {FS="---" } ; { print $1 }')
+        PACKAGE_NAME=$(echo ${{ inputs.package_string }} | awk 'BEGIN {FS="---" } ; { print $1 }')
         echo "::set-output name=PACKAGE_NAME::$PACKAGE_NAME"
-        DRAT_VERSION=$(echo ${{package_string}} | awk 'BEGIN {FS="---" } ; { print $2 }')
+        DRAT_VERSION=$(echo ${{ inputs.package_string }} | awk 'BEGIN {FS="---" } ; { print $2 }')
         echo "::set-output name=DRAT_VERSION::$DRAT_VERSION"
-        CRAN_VERSION=$(echo ${{package_string}} | awk 'BEGIN {FS="---" } ; { print $3 }')
+        CRAN_VERSION=$(echo ${{ inputs.package_string }} | awk 'BEGIN {FS="---" } ; { print $3 }')
         echo "::set-output name=CRAN_VERSION::$CRAN_VERSION"
       shell: bash
 
