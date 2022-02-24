@@ -83,3 +83,4 @@ jobs:
       - uses: hugheylab/actions/create-issue@main
         with:
           package_string: ${{ matrix.value }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
