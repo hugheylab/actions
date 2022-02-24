@@ -24,6 +24,7 @@ runs:
     - name: Create an issue
       uses: JasonEtco/create-an-issue@v2.6.0
       env: 
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         PACKAGE_NAME: "{{ steps.split-string.outputs.PACKAGE_NAME }}"
         DRAT_VERSION: "{{ steps.split-string.outputs.DRAT_VERSION }}"
         CRAN_VERSION: "{{ steps.split-string.outputs.CRAN_VERSION }}"
