@@ -15,6 +15,7 @@ runs:
     - uses: r-lib/actions/setup-r-dependencies@v2
       with:
         extra-packages: pkgdown
+        needs: website
 
     - name: Deploy package
       run: |
