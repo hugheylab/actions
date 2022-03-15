@@ -49,7 +49,7 @@ runs:
                                     object_name_linter = object_name_linter('camelCase'),
                                     single_quotes_linter = NULL)
         lintsFound = lint_package(linters = new_defaults)
-        system(sprintf('echo %s', toString(lintsFound)))
+        lintsFound
 
         if (length(lintsFound) > 0) stop('Found styling errors.')
       shell: Rscript {0}
