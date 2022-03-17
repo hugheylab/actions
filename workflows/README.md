@@ -7,9 +7,9 @@ In lab R package repositories, you should only use the following workflow config
 1. `check-deploy.yaml`
 2. `pkgdown.yaml`
 3. `test-coverage.yaml`
-4. `lint-package.yaml` (`custom-lint-script.R` must also be in the workflows directory)
+4. `lint.yaml` 
   - This workflow runs `lintr` on the package using only the linters that align with lab style policies.
-  - To modify the linters to be run, edit the `custom-lint-script.R` to disable, enable, modify, or add different linters.
+  - To modify the linters to be run, copy the `custom-lint-script.R` to your workflows directory and edit the script to disable, enable, modify, or add different linters.
   - See [lintr](https://github.com/r-lib/lintr) for more details.
 
 ## Analysis repositories
