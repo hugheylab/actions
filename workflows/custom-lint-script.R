@@ -48,7 +48,7 @@ newlineEsc = ' %0D%0A'
 
 lfDt[, format_line :=
        paste0(.I, '. ', filename, ' line ', line_number, ': ', message, ' (',
-              lint_link, ')', newlineEsc, '&nbsp;&nbsp;&nbsp;&nbsp;```', newlineEsc, line, newlineEsc, '```')]
+              lint_link, ')', newlineEsc, '```', newlineEsc, '    ', line, newlineEsc, '```')]
 issueStr = paste0(lfDt$format_line, collapse = newlineEsc)
 
 issueStr = gsub("'", "'\"'\"'", issueStr, fixed = TRUE)
