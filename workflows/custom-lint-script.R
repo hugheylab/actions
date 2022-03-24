@@ -29,15 +29,16 @@ double_quotes_linter <- function(source_file) {
     }
   )
 }
-newDefaults = with_defaults(assignment_linter = NULL,
-                            closed_curly_linter = NULL,
-                            commented_code_linter = NULL,
-                            cyclocomp_linter = NULL,
-                            double_quotes_linter = double_quotes_linter,
-                            line_length_linter(120),
-                            object_name_linter = object_name_linter('camelCase'),
-                            open_curly_linter = open_curly_linter(TRUE),
-                            single_quotes_linter = NULL)
+newDefaults = with_defaults(
+  assignment_linter = NULL,
+  closed_curly_linter = NULL,
+  commented_code_linter = NULL,
+  cyclocomp_linter = NULL,
+  double_quotes_linter = double_quotes_linter,
+  line_length_linter(120),
+  object_name_linter = object_name_linter('camelCase'),
+  open_curly_linter = open_curly_linter(TRUE),
+  single_quotes_linter = NULL)
 lintsFound = lint_package(linters = newDefaults)
 lfDt = unique(as.data.table(lintsFound), by = c('filename', 'line_number', 'message'))
 lfDt[, lint_link := paste0('https://github.com/hugheylab/', repository, '/blob/', branch, '/', filename, '#L', line_number)]
