@@ -7,6 +7,7 @@ if (!exists('repository')) {
   repository = substr(getwd(), dirIndexes[length(dirIndexes)] + 1, nchar(getwd()))
 }
 if (!exists('branch')) branch = 'main'
+if (!exists('repositoryType')) repositoryType = 'package'
 
 double_quotes_linter <- function(source_file) {
   content <- source_file$full_parsed_content
@@ -45,8 +46,27 @@ newDefaults = with_defaults(
   object_name_linter = object_name_linter('camelCase'),
   open_curly_linter = open_curly_linter(TRUE),
   single_quotes_linter = NULL)
-lintsFound = lint_package(linters = newDefaults)
-lfDt = unique(as.data.table(lintsFound), by = c('filename', 'line_number', 'message'))
+
+if (repositoryType == 'package') {
+  lintsFound = lint_package(linters = newDefaults)
+  lfDt = unique(as.data.table(lintsFound), by = c('filename', 'line_number', 'message'))
+} else {
+  lintDir = 'code'
+  lintsFound = lint_dir(lintDir, linters = newDefaults)
+  lfDt = unique(as.data.table(lintsFound), by = c('filename', 'line_number', 'message'))
+  lfDt[, filename := file.path(lintDir, filename)]
+
+  fileList = list.files('./', recursive = TRUE)
+  fileList = fileList[grepl('\\.R$', fileList)]
+  library('foreach')
+  lintsFound2 = foreach(file = fileList) %do% {
+    lint(file, linters = newDefaults)
+  }
+  lintsFound2 = lintr:::flatten_lints(lintsFound2)
+  lfDt2 = unique(as.data.table(lintsFound2), by = c('filename', 'line_number', 'message'))
+  lfDt2[, filename := sub(paste0(getwd(), '/'), '', filename, fixed = TRUE)]
+}
+
 lfDt[, lint_link := paste0('https://github.com/hugheylab/', repository, '/blob/', branch, '/', filename, '#L', line_number)]
 lfDt[, line := trimws(line)]
 setorder(lfDt, filename, line_number)
