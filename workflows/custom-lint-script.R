@@ -2,7 +2,7 @@ library('data.table')
 library('lintr')
 library('rex')
 
-if (!exists('repository')) repositoryType = 'main'
+if (!exists('repository')) repository = 'main'
 
 double_quotes_linter <- function(source_file) {
   content <- source_file$full_parsed_content
