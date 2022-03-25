@@ -2,7 +2,11 @@ library('data.table')
 library('lintr')
 library('rex')
 
-if (!exists('repository')) repository = 'main'
+if (!exists('repository')) {
+  dirIndexes = gregexpr('/', getwd())[[1]]
+  repository = substr(getwd(), dirIndexes[length(dirIndexes)] + 1, nchar(getwd()))
+}
+if (!exists('branch')) branch = 'main'
 
 double_quotes_linter <- function(source_file) {
   content <- source_file$full_parsed_content
