@@ -64,11 +64,9 @@ getLintDt = function(lintsFound, repository = NULL, branch = NULL) {
 
   # %0D = \r and %0A = \n
   # Needs different formatting for bash output
-  newlineEsc = ' %0D%0A'
-
   lfDt[, format_line :=
          glue('{.I}. {filename} line {line_number}: {message} (
-              {lint_link}){newlineEsc}    ```r{newlineEsc}    {line}{newlineEsc}    ```',
+              {lint_link}) %0D%0A    ```r %0D%0A    {line} %0D%0A    ```',
               .envir = .SD)]
   return(lfDt)
 }
