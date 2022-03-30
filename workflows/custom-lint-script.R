@@ -83,5 +83,3 @@ getFormattedIssueStr = function(lfDt) {
 
 lintsFound = lint_dir(linters = newDefaults, pattern = rex('.', or(one_of('Rr'), 'Rmd'), end))
 lintsFound
-
-s = sprintf("echo '::set-output name=style_text::%s'", issueStr)
