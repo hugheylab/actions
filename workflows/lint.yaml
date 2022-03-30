@@ -13,6 +13,7 @@ jobs:
     outputs:
         style_text: ${{ steps.run_lintr.outputs.style_text }}
         has_style_issues: ${{ steps.run_lintr.outputs.has_style_issues }}
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v2
 
@@ -24,8 +25,7 @@ jobs:
 
       - id: run_lintr
         run: |
-          install.packages('lintr')
-          install.packages('data.table')
+          install.packages(c('data.table', 'glue', 'lintr'))
 
           repository = '${{ github.event.repository.name }}'
           branch = system("echo ${BRANCH_NAME}", intern = TRUE)
@@ -38,6 +38,23 @@ jobs:
               lintFile)}
 
           source(lintFile)
+          
+          lfDt[, lint_link := paste0('https://github.com/hugheylab/', repository, '/blob/', branch, '/', filename, '#L', line_number)]
+          lfDt[, line := trimws(line)]
+          setorder(lfDt, filename, line_number)
+
+          # %0D = \r and %0A = \n
+          # Needs different formatting for bash output
+          newlineEsc = ' %0D%0A'
+
+          lfDt[, format_line :=
+                paste0(.I, '. ', filename, ' line ', line_number, ': ', message, ' (',
+                        lint_link, ')', newlineEsc, '    ```r', newlineEsc, '    ', line, newlineEsc, '    ```')]
+          issueStr = paste0(lfDt$format_line, collapse = newlineEsc)
+
+          issueStr = gsub("'", "'\"'\"'", issueStr, fixed = TRUE)
+
+          s = sprintf("echo '::set-output name=style_text::%s'", issueStr)
 
           print(lfDt)
 
@@ -51,8 +68,9 @@ jobs:
         shell: Rscript {0}
 
   close_open_lint:
-    name: Close all issues labeled "lint-styling"
+    name: Close all issues labeled "lint"
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Find all cran update issues
         id: issues
@@ -79,6 +97,7 @@ jobs:
     name: Create issue for lintr errors.
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    timeout-minutes: 30
     if: ${{ fromJson(needs.lint_package.outputs.has_style_issues) }}
     steps:
       - uses: actions/checkout@v2
@@ -96,4 +115,4 @@ jobs:
           body: |
             ${{ needs.lint_package.outputs.style_text }}
           labels: |
-            lint-styling
+            lint

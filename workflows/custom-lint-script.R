@@ -1,19 +1,19 @@
 library('data.table')
+library('foreach')
+library('glue')
 library('lintr')
 library('rex')
 
 if (!exists('repository')) {
   dirIndexes = gregexpr('/', getwd())[[1]]
-  repository = substr(getwd(), dirIndexes[length(dirIndexes)] + 1, nchar(getwd()))
-}
+  repository = substr(getwd(), dirIndexes[length(dirIndexes)] + 1, nchar(getwd()))}
 if (!exists('branch')) branch = 'main'
-if (!exists('repositoryType')) repositoryType = 'package'
 
-double_quotes_linter <- function(source_file) {
-  content <- source_file$full_parsed_content
-  str_idx <- which(content$token == "STR_CONST")
-  squote_matches <- which(re_matches(
-    content[str_idx, "text"],
+double_quotes_linter = function(source_file) {
+  content = source_file$full_parsed_content
+  str_idx = which(content$token == 'STR_CONST')
+  squote_matches = which(re_matches(
+    content[str_idx, 'text'],
     rex(start, double_quote, any_non_single_quotes, double_quote, end)
   ))
 
@@ -21,14 +21,14 @@ double_quotes_linter <- function(source_file) {
     squote_matches,
     function(id) {
       with(content[str_idx[id], ], {
-        line <- source_file$file_lines[line1]
-        col2 <- if (line1 == line2) col2 else nchar(line)
+        line = source_file$file_lines[line1]
+        col2 = if (line1 == line2) col2 else nchar(line)
         Lint(
           filename = source_file$filename,
           line_number = line1,
           column_number = col1,
-          type = "style",
-          message = "Only use single-quotes.",
+          type = 'style',
+          message = 'Only use single-quotes.',
           line = line,
           ranges = list(c(col1, col2))
         )
@@ -36,6 +36,7 @@ double_quotes_linter <- function(source_file) {
     }
   )
 }
+
 newDefaults = with_defaults(
   assignment_linter = NULL,
   closed_curly_linter = NULL,
@@ -47,39 +48,41 @@ newDefaults = with_defaults(
   open_curly_linter = open_curly_linter(TRUE),
   single_quotes_linter = NULL)
 
-if (repositoryType == 'package') {
-  lintsFound = lint_package(linters = newDefaults)
-  lfDt = unique(as.data.table(lintsFound), by = c('filename', 'line_number', 'message'))
-} else {
-  lintDir = 'code'
-  lintsFound = lint_dir(lintDir, linters = newDefaults)
-  lfDt = unique(as.data.table(lintsFound), by = c('filename', 'line_number', 'message'))
-  lfDt[, filename := file.path(lintDir, filename)]
+getLintDt = function(lintsFound, repository = NULL, branch = NULL) {
+  if (is.null(repository)) {
+    dirIndexes = gregexpr('/', getwd())[[1]]
+    repository = substr(getwd(), dirIndexes[length(dirIndexes)] + 1, nchar(getwd()))}
 
-  fileList = list.files('./', recursive = TRUE)
-  fileList = fileList[grepl('\\.R$', fileList)]
-  library('foreach')
-  lintsFound2 = foreach(file = fileList) %do% {
-    lint(file, linters = newDefaults)
-  }
-  lintsFound2 = lintr:::flatten_lints(lintsFound2)
-  lfDt2 = unique(as.data.table(lintsFound2), by = c('filename', 'line_number', 'message'))
-  lfDt2[, filename := sub(paste0(getwd(), '/'), '', filename, fixed = TRUE)]
+  if (is.null(branch)) branch = 'main'
+
+  lfDt = unique(as.data.table(lintsFound), by = c('filename', 'line_number', 'message'))
+
+  lfDt[, lint_link := glue(
+    'https://github.com/hugheylab/{repository}/blob/{branch}/{filename}#L{line_number}',
+    .envir = .SD)]
+  lfDt[, line := trimws(line)]
+  setorder(lfDt, filename, line_number)
+
+  # %0D = \r and %0A = \n
+  # Needs different formatting for bash output
+  newlineEsc = ' %0D%0A'
+
+  lfDt[, format_line :=
+         glue('{.I}. {filename} line {line_number}: {message} (
+              {lint_link}){newlineEsc}    ```r{newlineEsc}    {line}{newlineEsc}    ```',
+              .envir = .SD)]
+  return(lfDt)
 }
 
-lfDt[, lint_link := paste0('https://github.com/hugheylab/', repository, '/blob/', branch, '/', filename, '#L', line_number)]
-lfDt[, line := trimws(line)]
-setorder(lfDt, filename, line_number)
+getFormattedIssueStr = function(lfDt) {
+  newlineEsc = ' %0D%0A'
+  issueStr = paste0(lfDt$format_line, collapse = newlineEsc)
+  issueStr = gsub('"', '%22', issueStr, fixed = TRUE)
+  issueStr = gsub("'", "'\"'\"'", issueStr, fixed = TRUE)
+  return(issueStr)
+}
 
-# %0D = \r and %0A = \n
-# Needs different formatting for bash output
-newlineEsc = ' %0D%0A'
-
-lfDt[, format_line :=
-       paste0(.I, '. ', filename, ' line ', line_number, ': ', message, ' (',
-              lint_link, ')', newlineEsc, '    ```r', newlineEsc, '    ', line, newlineEsc, '    ```')]
-issueStr = paste0(lfDt$format_line, collapse = newlineEsc)
-
-issueStr = gsub("'", "'\"'\"'", issueStr, fixed = TRUE)
+lintsFound = lint_dir(linters = newDefaults, pattern = rex('.', or(one_of('Rr'), 'Rmd'), end))
+lintsFound
 
 s = sprintf("echo '::set-output name=style_text::%s'", issueStr)
