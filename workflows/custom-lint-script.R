@@ -1,5 +1,4 @@
 library('data.table')
-library('foreach')
 library('glue')
 library('lintr')
 library('rex')

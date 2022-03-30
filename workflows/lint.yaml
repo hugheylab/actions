@@ -38,29 +38,12 @@ jobs:
               lintFile)}
 
           source(lintFile)
-          
-          lfDt[, lint_link := paste0('https://github.com/hugheylab/', repository, '/blob/', branch, '/', filename, '#L', line_number)]
-          lfDt[, line := trimws(line)]
-          setorder(lfDt, filename, line_number)
 
-          # %0D = \r and %0A = \n
-          # Needs different formatting for bash output
-          newlineEsc = ' %0D%0A'
-
-          lfDt[, format_line :=
-                paste0(.I, '. ', filename, ' line ', line_number, ': ', message, ' (',
-                        lint_link, ')', newlineEsc, '    ```r', newlineEsc, '    ', line, newlineEsc, '    ```')]
-          issueStr = paste0(lfDt$format_line, collapse = newlineEsc)
-
-          issueStr = gsub("'", "'\"'\"'", issueStr, fixed = TRUE)
-
-          s = sprintf("echo '::set-output name=style_text::%s'", issueStr)
-
-          print(lfDt)
+          lfDt = getLintDt(lintsFound)
+          issueStr = getFormattedIssueStr(lfDt)
 
           s = sprintf("echo '::set-output name=style_text::%s'", issueStr)
           system(s)
-
           if (nrow(lfDt) > 0) {
             system("echo '::set-output name=has_style_issues::true'")
           } else {
@@ -76,7 +59,7 @@ jobs:
         id: issues
         uses: lee-dohm/select-matching-issues@v1.2.0
         with:
-          query: "label:lint-styling is:open"
+          query: "label:lint is:open"
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Close found issues
         run: |
