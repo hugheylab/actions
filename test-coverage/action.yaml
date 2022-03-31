@@ -16,26 +16,11 @@ runs:
 
     - name: Setup environment
       run: |
-        # If below command fails due to not finding aspera connect version, go to
-        # https://www.ibm.com/aspera/connect/
-        # Replace below link and aspera connect version with links from site.
-        # wget https://d3gcli72yxqn2z.cloudfront.net/connect_latest/v4/bin/ibm-aspera-connect_4.1.1.73_linux.tar.gz
-        # tar -zxvf ibm-aspera-connect_4.1.1.73_linux.tar.gz
-        # ./ibm-aspera-connect_4.1.1.73_linux.sh
-        # rm ibm-aspera-connect*
-
-        sudo apt-get install ruby-full
-        sudo gem install aspera-cli
-        sudo gem update aspera-cli
-
-        ascli conf ascp install
-
-        DOWNOUT=$(ascli config ascp connect version 'Aspera Connect for Linux 64' download 'Linux 64-bit Installer')
-        CONNECTTAR=$(echo $DOWNOUT | awk '{ print substr($0, match($0, "ibm-aspera"));}')
-        CONNECTSH=$(awk '{ sub(/\.tar\.gz/, ".sh"); print }' <<< "$CONNECTTAR")
-        tar -zxvf $CONNECTTAR
-        ./$CONNECTSH
-        rm ibm-aspera-connect*
+        wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/3.0.0/sratoolkit.3.0.0-ubuntu64.tar.gz
+        tar -zxvf sratoolkit.3.0.0-ubuntu64.tar.gz
+        echo 'export PATH="${PATH}:${HOME}/sratoolkit.3.0.0-ubuntu64/bin"' >> ~/.bashrc
+        echo 'export PATH="${PATH}:${HOME}/sratoolkit.3.0.0-ubuntu64/bin"' >> ~/.profile
+        rm sratoolkit*.tar.gz
 
         wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
         sh Miniconda3-latest-Linux-x86_64.sh -b -p ~/miniconda3
@@ -56,7 +41,6 @@ runs:
         mkdir -p ~/genomes
         refgenie init -c ~/genomes/genome_config.yaml
         echo 'export REFGENIE="${HOME}/genomes/genome_config.yaml"' >> ${GITHUB_ENV}
-        
 
         refgenie pull mm10/salmon_partial_sa_index --genome-config ~/genomes/genome_config.yaml
       shell: bash
