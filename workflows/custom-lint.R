@@ -60,8 +60,8 @@ getLintDt = function(lintsFound, repository = NULL, branch = NULL) {
     'https://github.com/hugheylab/{repository}/blob/{branch}/{filename}#L{line_number}',
     .envir = .SD)]
   lfDt[, line := trimws(line)]
-  lfDt[, line := gsub('\\r', '', line)]
-  lfDt[, line := gsub('\\n', '', line)]
+  lfDt[, line := gsub('\\\\r', '', line)]
+  lfDt[, line := gsub('\\\\n', '', line)]
   setorder(lfDt, filename, line_number)
 
   # %0D = \r and %0A = \n
