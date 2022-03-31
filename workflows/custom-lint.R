@@ -60,6 +60,8 @@ getLintDt = function(lintsFound, repository = NULL, branch = NULL) {
     'https://github.com/hugheylab/{repository}/blob/{branch}/{filename}#L{line_number}',
     .envir = .SD)]
   lfDt[, line := trimws(line)]
+  lfDt[, line := gsub('\\r', '', line)]
+  lfDt[, line := gsub('\\n', '', line)]
   setorder(lfDt, filename, line_number)
 
   # %0D = \r and %0A = \n
@@ -72,11 +74,7 @@ getLintDt = function(lintsFound, repository = NULL, branch = NULL) {
 
 getFormattedIssueStr = function(lfDt) {
   newlineEsc = ' %0D%0A'
-  nEsc = '%0A'
-  rEsc = '%0D'
   issueStr = paste0(lfDt$format_line, collapse = newlineEsc)
-  issueStr = gsub('\\n', nEsc, issueStr, fixed = TRUE)
-  issueStr = gsub('\\r', rEsc, issueStr, fixed = TRUE)
   issueStr = gsub('"', '%22', issueStr, fixed = TRUE)
   issueStr = gsub("'", "'\"'\"'", issueStr, fixed = TRUE)
   return(issueStr)
