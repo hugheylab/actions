@@ -62,6 +62,8 @@ getLintDt = function(lintsFound, repository = NULL, branch = NULL) {
   lfDt[, line := trimws(line)]
   lfDt[, line := gsub('\\\\r', '', line)]
   lfDt[, line := gsub('\\\\n', '', line)]
+  lfDt[, line := gsub('\\r', '', line)]
+  lfDt[, line := gsub('\\n', '', line)]
   setorder(lfDt, filename, line_number)
 
   # %0D = \r and %0A = \n
