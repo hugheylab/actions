@@ -71,9 +71,11 @@ getLintDt = function(lintsFound, repository = NULL, branch = NULL) {
 }
 
 getFormattedIssueStr = function(lfDt) {
-  newlineEsc = ' %0D%0A'
+  nEsc = ' %0A'
+  rEsc = ' %0D'
   issueStr = paste0(lfDt$format_line, collapse = newlineEsc)
-  issueStr = gsub('\\n', newlineEsc, issueStr, fixed = TRUE)
+  issueStr = gsub('\\n', nEsc, issueStr, fixed = TRUE)
+  issueStr = gsub('\\r', rEsc, issueStr, fixed = TRUE)
   issueStr = gsub('"', '%22', issueStr, fixed = TRUE)
   issueStr = gsub("'", "'\"'\"'", issueStr, fixed = TRUE)
   return(issueStr)
