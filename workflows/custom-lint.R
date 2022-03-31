@@ -60,25 +60,25 @@ getLintDt = function(lintsFound, repository = NULL, branch = NULL) {
     'https://github.com/hugheylab/{repository}/blob/{branch}/{filename}#L{line_number}',
     .envir = .SD)]
   lfDt[, line := trimws(line)]
-  lfDt[, line := gsub('\\\\r', '', line)]
-  lfDt[, line := gsub('\\\\n', '', line)]
-  lfDt[, line := gsub('\\r', '', line)]
-  lfDt[, line := gsub('\\n', '', line)]
+  # lfDt[, line := gsub('\\\\r', '', line)]
+  # lfDt[, line := gsub('\\\\n', '', line)]
+  # lfDt[, line := gsub('\\r', '', line)]
+  # lfDt[, line := gsub('\\n', '', line)]
   setorder(lfDt, filename, line_number)
 
   # %0D = \r and %0A = \n
   # Needs different formatting for bash output
   lfDt[, format_line :=
          glue('{.I}. {filename} line {line_number}: {message} ({lint_link}){newLineEsc}    ```r{newLineEsc}    {line}{newLineEsc}    ```',
-              .I = .I, filename = filename, line_number = line_number, message = message, lint_link = lint_link, newLineEsc = ' %0D%0A', line = line)]
+              .I = .I, filename = filename, line_number = line_number, message = message, lint_link = lint_link, newLineEsc = ' \r\n', line = line)]
   return(lfDt)
 }
 
 getFormattedIssueStr = function(lfDt) {
-  newlineEsc = ' %0D%0A'
+  newlineEsc = ' \r\n'
   issueStr = paste0(lfDt$format_line, collapse = newlineEsc)
-  issueStr = gsub('"', '%22', issueStr, fixed = TRUE)
-  issueStr = gsub("'", "'\"'\"'", issueStr, fixed = TRUE)
+  # issueStr = gsub('"', '%22', issueStr, fixed = TRUE)
+  # issueStr = gsub("'", "'\"'\"'", issueStr, fixed = TRUE)
   return(issueStr)
 }
 
