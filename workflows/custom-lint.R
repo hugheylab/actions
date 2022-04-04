@@ -89,7 +89,7 @@ getFormattedIssueStr = function(lfDt) {
   fwrite(lfDt[, .(filename, line_number, message, line)], fileName)
   tempCsvStr = readChar(fileName, file.info(fileName)$size)
   unlink(fileName)
-  paste0(
+  issueStr = paste0(
     issueStr,
     newlineEsc,
     'If you want to exclude these style issues from being counted, save the ',
