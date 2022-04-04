@@ -66,6 +66,12 @@ getLintDt = function(lintsFound, repository = NULL, branch = NULL) {
   # lfDt[, line := gsub('\\n', '', line)]
   setorder(lfDt, filename, line_number)
 
+  lintExcludeFilename = 'lint_exclude.csv'
+  if (file.exists(lintExcludeFilename)) {
+    lintExclude = fread(lintExcludeFilename)
+    lfDt = lfDt[!lintExclude, on = c('filename', 'line_number', 'message', 'line')]
+  }
+
   # %0D = \r and %0A = \n
   # Needs different formatting for bash output
   lfDt[, format_line :=
@@ -79,6 +85,21 @@ getFormattedIssueStr = function(lfDt) {
   issueStr = paste0(lfDt$format_line, collapse = newlineEsc)
   # issueStr = gsub('"', '%22', issueStr, fixed = TRUE)
   # issueStr = gsub("'", "'\"'\"'", issueStr, fixed = TRUE)
+  fileName = 'temp_csv.csv'
+  fwrite(lfDt[, .(filename, line_number, message, line)], fileName)
+  tempCsvStr = readChar(fileName, file.info(fileName)$size)
+  unlink(fileName)
+  paste0(
+    issueStr,
+    newlineEsc,
+    'If you want to exclude these style issues from being counted, save the ',
+    'following as `lint_exclude.csv` in the repository:',
+    newlineEsc,
+    '```',
+    newlineEsc,
+    tempCsvStr,
+    newlineEsc,
+    '```')
   return(issueStr)
 }
 
