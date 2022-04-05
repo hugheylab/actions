@@ -29,12 +29,7 @@ double_quotes_linter = function(source_file) {
           type = 'style',
           message = 'Only use single-quotes.',
           line = line,
-          ranges = list(c(col1, col2))
-        )
-      })
-    }
-  )
-}
+          ranges = list(c(col1, col2)))})})}
 
 newDefaults = with_defaults(
   assignment_linter = NULL,
@@ -69,16 +64,18 @@ getLintDt = function(lintsFound, repository = NULL, branch = NULL) {
   lintExcludeFilename = 'lint_exclude.csv'
   if (file.exists(lintExcludeFilename)) {
     lintExclude = fread(lintExcludeFilename)
-    lfDt = lfDt[!lintExclude, on = c('filename', 'line_number', 'message', 'line')]
-  }
+    onCols = c('filename', 'line_number', 'message', 'line')
+    lintExcludeNotFound = lintExclude[!lfDt, on = onCols]
+    if (nrow(lintExcludeNotFound) > 0) {
+      warning('There are lines in the exclusion not found in the current code base.')}
+    lfDt = lfDt[!lintExclude, on = onCols]}
 
   # %0D = \r and %0A = \n
   # Needs different formatting for bash output
   lfDt[, format_line :=
-         glue('{.I}. {filename} line {line_number}: {message} ({lint_link}){newLineEsc}    ```r{newLineEsc}    {line}{newLineEsc}    ```',
-              .I = .I, filename = filename, line_number = line_number, message = message, lint_link = lint_link, newLineEsc = ' \r\n', line = line)]
-  return(lfDt)
-}
+         sprintf('%s. %s line %s: %s (%s) \r\n    ```r \r\n    %s  \r\n    ```',
+              .I, filename, line_number, message, lint_link, line)]
+  return(lfDt)}
 
 getFormattedIssueStr = function(lfDt) {
   newlineEsc = ' \r\n'
@@ -92,16 +89,31 @@ getFormattedIssueStr = function(lfDt) {
   issueStr = paste0(
     issueStr,
     newlineEsc,
-    'If you want to exclude these style issues from being counted, save the ',
-    'following as `lint_exclude.csv` in the repository:',
+    'To exclude any of these issues from being detected, add the appropriate ',
+    'lines, shown below, to lint_exclusions.csv at the top-level of the repository:',
     newlineEsc,
     '```',
     newlineEsc,
     tempCsvStr,
     newlineEsc,
     '```')
-  return(issueStr)
-}
+  lintExcludeFilename = 'lint_exclude.csv'
+  if (file.exists(lintExcludeFilename)) {
+    lintExclude = fread(lintExcludeFilename)
+    onCols = c('filename', 'line_number', 'message', 'line')
+    lintExcludeNotFound = lintExclude[!lfDt, on = onCols]
+    if (nrow(lintExcludeNotFound) > 0) {
+      lintExcludeNotFound[, format_line :=
+                            sprintf('%s line %s: %s \r\n    ```r \r\n    %s  \r\n    ```',
+                                    filename, line_number, message, line)]
+      notFoundStr = paste0(lintExcludeNotFound$format_line, collapse = '\r\n')
+      issueStr = paste0(
+        issueStr,
+        newlineEsc,
+        'Warning, there are lines in the exclusion not found in the current code base: ',
+        newlineEsc,
+        notFoundStr)}}
+  return(issueStr)}
 
 lintsFound = lint_dir(linters = newDefaults, pattern = rex('.', or(one_of('Rr'), 'Rmd'), end))
 lintsFound
