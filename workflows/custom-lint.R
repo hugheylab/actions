@@ -32,7 +32,7 @@ getLintIgnore = function(path = 'lint_ignore.csv') {
     fread(path)
   } else {
     data.table(
-      filepath = as.character(), line_number = as.integer(),
+      filename = as.character(), line_number = as.integer(),
       message = as.character(), line = as.character())}
   return(lintIgnore)}
 
@@ -44,13 +44,13 @@ getLintDt = function(lintsFound, repository = NULL, branch = NULL) {
 
   if (is.null(branch)) branch = 'main'
 
-  lfDt = unique(as.data.table(lintsFound), by = c('filepath', 'line_number', 'message'))
+  lfDt = unique(as.data.table(lintsFound), by = c('filename', 'line_number', 'message'))
 
   lfDt[, lint_link := sprintf(
     'https://github.com/hugheylab/%s/blob/%s/%s#L%s',
-    repository, branch, filepath, line_number)]
+    repository, branch, filename, line_number)]
   lfDt[, line := trimws(line)]
-  setorder(lfDt, filepath, line_number)
+  setorder(lfDt, filename, line_number)
 
   lintIgnore = getLintIgnore()
   lintIgnoreNotFound = lintIgnore[!lfDt, on = colnames(lintIgnore)]
@@ -61,7 +61,7 @@ getLintDt = function(lintsFound, repository = NULL, branch = NULL) {
   newlineEsc = ' \r\n'
   lfDt[, format_line := sprintf(
     '%s. %s line %s: %s (%s) %s    ```r %s    %s  %s    ```',
-    .I, filepath, line_number, message, lint_link, newlineEsc, newlineEsc, line, newlineEsc)]
+    .I, filename, line_number, message, lint_link, newlineEsc, newlineEsc, line, newlineEsc)]
   return(lfDt)}
 
 
@@ -69,7 +69,7 @@ getFormattedIssueStr = function(lfDt) {
   newlineEsc = ' \r\n'
   issueStr = paste0(lfDt$format_line, collapse = newlineEsc)
   fileName = 'temp_csv.csv'
-  fwrite(lfDt[, .(filepath, line_number, message, line)], fileName)
+  fwrite(lfDt[, .(filename, line_number, message, line)], fileName)
   tempCsvStr = readChar(fileName, file.info(fileName)$size)
   unlink(fileName)
 
@@ -85,7 +85,7 @@ getFormattedIssueStr = function(lfDt) {
   if (nrow(lintIgnoreNotFound) > 0) {
     lintIgnoreNotFound[, format_line := sprintf(
       '%s line %s: %s \r\n    ```r \r\n    %s  \r\n    ```',
-      filepath, line_number, message, line)]
+      filename, line_number, message, line)]
     notFoundStr = paste0(lintIgnoreNotFound$format_line, collapse = '\r\n')
 
     issueStr = sprintf(
