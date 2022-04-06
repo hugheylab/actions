@@ -44,7 +44,6 @@ jobs:
               paste0('PATCH /repos/hugheylab/', repository, '/issues/', issuesGet[[1]]$number),
               state = 'closed')}
 
-
           if (nrow(lfDt) > 0) {
             issuesPost = gh(
               endpoint = paste0('POST /repos/hugheylab/', repository, '/issues'),
