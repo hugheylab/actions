@@ -16,34 +16,10 @@ runs:
 
     - name: Setup environment
       run: |
-        wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/3.0.0/sratoolkit.3.0.0-ubuntu64.tar.gz
-        tar -zxvf sratoolkit.3.0.0-ubuntu64.tar.gz
-        echo 'export PATH="${PATH}:${HOME}/sratoolkit.3.0.0-ubuntu64/bin"' >> ~/.bashrc
-        echo 'export PATH="${PATH}:${HOME}/sratoolkit.3.0.0-ubuntu64/bin"' >> ~/.profile
-        rm sratoolkit*.tar.gz
-
-        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-        sh Miniconda3-latest-Linux-x86_64.sh -b -p ~/miniconda3
-        rm Miniconda3-latest-Linux-x86_64.sh
-        ~/miniconda3/bin/conda init bash
-
-        source ~/miniconda3/etc/profile.d/conda.sh
-        conda config --set auto_activate_base false
-        conda activate
-
-        conda config --add channels defaults
-        conda config --add channels bioconda
-        conda config --add channels conda-forge
-
-        conda install mamba -c conda-forge
-        mamba install fastq-screen fastqc multiqc pigz refgenie salmon trim-galore
-
-        mkdir -p ~/genomes
-        refgenie init -c ~/genomes/genome_config.yaml
-        echo 'export REFGENIE="${HOME}/genomes/genome_config.yaml"' >> ${GITHUB_ENV}
-
-        refgenie pull mm10/salmon_partial_sa_index --genome-config ~/genomes/genome_config.yaml
-      shell: bash
+        install.packages('devtools')
+        devtools::install(upgrade = 'always')
+        seeker:::installTools(salmonIndexes = 'mm10/salmon_partial_sa_index')
+      shell: Rscript {0}
 
     - name: Test coverage
       run: covr::codecov()
