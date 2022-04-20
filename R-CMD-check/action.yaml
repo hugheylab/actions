@@ -21,17 +21,11 @@ runs:
     - name: Setup environment
       if: ${{ matrix.config.os == 'macOS-latest' || matrix.config.os == 'ubuntu-latest' }}
       run: |
+        cat ~/.bashrc
         install.packages('devtools')
         devtools::install(upgrade = 'always')
         seeker:::installTools(salmonIndexes = 'mm10/salmon_partial_sa_index')
       shell: Rscript {0}
-    
-    - name: See ncbi dir 
-      run: |
-        ls -a ~
-        ls -a ~/.ncbi
-        cat ~/.ncbi/user-settings.mkfg
-      shell: bash
 
     - uses: r-lib/actions/check-r-package@v2
 
