@@ -20,7 +20,10 @@ runs:
 
     - name: See bashrc
       run: |
+        echo "cat ~/.bashrc"
         cat ~/.bashrc
+        echo "echo PATH variable"
+        echo "$PATH"
       shell: bash
 
     - name: Setup environment
