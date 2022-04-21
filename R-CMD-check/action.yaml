@@ -18,19 +18,6 @@ runs:
       with:
         extra-packages: rcmdcheck
 
-    - name: Install miniconda3
-      if: ${{ matrix.config.os == 'ubuntu-latest' }}
-      run: |
-        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-        sh Miniconda3-latest-Linux-x86_64.sh -b -p ~/miniconda3
-        rm Miniconda3-latest-Linux-x86_64.sh
-        ~/miniconda3/bin/conda init bash
-
-        source ~/miniconda3/etc/profile.d/conda.sh
-        conda config --set auto_activate_base false
-        conda activate
-      shell: bash
-
     - name: Setup environment
       if: ${{ matrix.config.os == 'macOS-latest' || matrix.config.os == 'ubuntu-latest' }}
       run: |
