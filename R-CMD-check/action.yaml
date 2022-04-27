@@ -18,12 +18,19 @@ runs:
       with:
         extra-packages: rcmdcheck
 
+    - name: Install uuidgen
+      run: |
+        sudo apt-get install uuidgen
+
     - name: Setup environment
       if: ${{ matrix.config.os == 'macOS-latest' || matrix.config.os == 'ubuntu-latest' }}
       run: |
         install.packages('devtools')
         devtools::install(upgrade = 'always')
         seeker:::installTools(salmonIndexes = 'mm10/salmon_partial_sa_index')
+
+
+
       shell: Rscript {0}
 
     - uses: r-lib/actions/check-r-package@v2
