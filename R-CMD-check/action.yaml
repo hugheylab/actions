@@ -20,7 +20,7 @@ runs:
 
     - name: Install uuidgen
       run: |
-        sudo apt-get install uuidgen
+        sudo apt-get install util-linux
       shell: bash
 
     - name: Setup environment
