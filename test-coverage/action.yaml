@@ -14,11 +14,20 @@ runs:
       with:
         extra-packages: covr
 
+    - name: Install SRA Toolkit Linux
+      run: |
+        wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/3.0.0/sratoolkit.3.0.0-ubuntu64.tar.gz
+        tar -zxvf sratoolkit.3.0.0-ubuntu64.tar.gz
+        echo 'export PATH="${PATH}:${HOME}/sratoolkit.3.0.0-ubuntu64/bin"' >> ~/.bashrc
+        echo 'export PATH="${PATH}:${HOME}/sratoolkit.3.0.0-ubuntu64/bin"' >> ~/.profile
+        rm sratoolkit*.tar.gz
+      shell: bash
+
     - name: Setup environment
       run: |
         install.packages('devtools')
         devtools::install(upgrade = 'always')
-        seeker:::installTools(salmonIndexes = 'mm10/salmon_partial_sa_index')
+        seeker:::installTools(sraToolkitPath = NULL, salmonIndexes = 'mm10/salmon_partial_sa_index')
       shell: Rscript {0}
 
     - name: Test coverage
