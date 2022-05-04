@@ -28,6 +28,7 @@ runs:
 
     - name: Fix ncbi directory
       run: |
+        source ~/.profile
         echo "Outputting ncbi settings..."
         vdb-config -o n NCBI_SETTINGS
         echo "Outputting full settings..."
