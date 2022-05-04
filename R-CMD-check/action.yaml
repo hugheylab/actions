@@ -28,8 +28,12 @@ runs:
 
     - name: Fix ncbi directory
       run: |
+        echo "Outputting ncbi settings..."
+        vdb-config -o n NCBI_SETTINGS
+        echo "Outputting full settings..."
+        vdb-config -o n
         mkdir ~/.ncbi
-        cp /root/.ncbi/user-settings.mkfg .ncbi
+        cp /root/.ncbi/user-settings.mkfg ~/.ncbi
       shell: bash
 
     - uses: r-lib/actions/check-r-package@v2
