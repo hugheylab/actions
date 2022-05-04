@@ -26,17 +26,6 @@ runs:
         seeker:::installTools(salmonIndexes = 'mm10/salmon_partial_sa_index')
       shell: Rscript {0}
 
-    - name: Show ncbi directory
-      run: |
-        source ~/.profile
-        echo "Outputting ncbi settings..."
-        vdb-config -o n NCBI_SETTINGS
-        echo "Outputting full settings..."
-        vdb-config -o n
-        echo "Showing config file contents..."
-        cat ~/.ncbi/user-settings.mkfg
-      shell: bash
-
     - uses: r-lib/actions/check-r-package@v2
 
     - name: Show testthat output
