@@ -18,7 +18,7 @@ runs:
       run: |
         install.packages('devtools')
         devtools::install(upgrade = 'always')
-        seeker:::installTools(salmonIndexes = 'mm10/salmon_partial_sa_index')
+        seeker:::installSysDeps(salmonIndexes = 'mm10/salmon_partial_sa_index')
       shell: Rscript {0}
 
     - name: Test coverage
