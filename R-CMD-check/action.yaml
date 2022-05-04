@@ -18,32 +18,12 @@ runs:
       with:
         extra-packages: rcmdcheck
 
-    - name: Install SRA Toolkit Mac
-      if: ${{ matrix.config.os == 'macOS-latest'}}
-      run: |
-        wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/3.0.0/sratoolkit.3.0.0-mac64.tar.gz
-        tar -zxvf sratoolkit.3.0.0-mac64.tar.gz
-        echo 'export PATH="${PATH}:${HOME}/sratoolkit.3.0.0-mac64/bin"' >> ~/.bashrc
-        echo 'export PATH="${PATH}:${HOME}/sratoolkit.3.0.0-mac64/bin"' >> ~/.profile
-        rm sratoolkit*.tar.gz
-      shell: bash
-
-    - name: Install SRA Toolkit Linux
-      if: ${{ matrix.config.os == 'ubuntu-latest' }}
-      run: |
-        wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/3.0.0/sratoolkit.3.0.0-ubuntu64.tar.gz
-        tar -zxvf sratoolkit.3.0.0-ubuntu64.tar.gz
-        echo 'export PATH="${PATH}:${HOME}/sratoolkit.3.0.0-ubuntu64/bin"' >> ~/.bashrc
-        echo 'export PATH="${PATH}:${HOME}/sratoolkit.3.0.0-ubuntu64/bin"' >> ~/.profile
-        rm sratoolkit*.tar.gz
-      shell: bash
-
     - name: Setup environment
       if: ${{ matrix.config.os == 'macOS-latest' || matrix.config.os == 'ubuntu-latest' }}
       run: |
         install.packages('devtools')
         devtools::install(upgrade = 'always')
-        seeker:::installTools(sraToolkitPath = NULL, salmonIndexes = 'mm10/salmon_partial_sa_index')
+        seeker:::installTools(salmonIndexes = 'mm10/salmon_partial_sa_index')
       shell: Rscript {0}
 
     - uses: r-lib/actions/check-r-package@v2
