@@ -24,15 +24,13 @@ runs:
         install.packages('devtools')
         devtools::install(upgrade = 'always')
         seeker:::installTools(salmonIndexes = 'mm10/salmon_partial_sa_index')
-        
-        # Below is to check for root directory and copy to correct place
-        ncbiDir = file.path('~', '.ncbi')
-        if (!dir.exists(ncbiDir)) dir.create(ncbiDir)
-        if (!file.exists(file.path(ncbiDir, 'user-settings.mkfg'))) {
-          system(
-          "cp /root/.ncbi/user-settings.mkfg .ncbi")
-        }
       shell: Rscript {0}
+
+    - name: Fix ncbi directory
+      run: |
+        mkdir ~/.ncbi
+        cp /root/.ncbi/user-settings.mkfg .ncbi
+      shell: bash
 
     - uses: r-lib/actions/check-r-package@v2
 
