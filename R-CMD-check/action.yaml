@@ -23,7 +23,7 @@ runs:
       run: |
         install.packages('devtools')
         devtools::install(upgrade = 'always')
-        seeker:::installSysDeps(refgenieGenomes = 'mm10/salmon_partial_sa_index')
+        seeker::installSysDeps(refgenieGenomes = 'mm10/salmon_partial_sa_index')
       shell: Rscript {0}
 
     - uses: r-lib/actions/check-r-package@v2
