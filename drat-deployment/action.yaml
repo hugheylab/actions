@@ -102,7 +102,7 @@ runs:
       then
         echo "Updating badge."
         cd ../drat/badges
-        wget "https://img.shields.io/badge/hugheylab%20drat-v${PKG_VERSION}-green.svg" -O "${PKG_NAME}_drat_badge.svg"
+        wget "https://img.shields.io/badge/hugheylab%20drat-v${PKG_VERSION}-4c1.svg" -O "${PKG_NAME}_drat_badge.svg"
         cd ../
         echo "Deploying."
         cd ../drat
