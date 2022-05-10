@@ -100,6 +100,10 @@ runs:
       fi
       if [ ${DEPLOY} = true ]
       then
+        echo "Updating badge."
+        cd ../drat/badges
+        wget "https://img.shields.io/badge/hugheylab%20drat-v${PKG_VERSION}-green.svg" -O "${PKG_NAME}_drat_badge.svg"
+        cd ../
         echo "Deploying."
         cd ../drat
         git config --global user.email "jakejhughey@gmail.com"
@@ -108,6 +112,7 @@ runs:
           -e "install.packages('drat')" \
           -e "drat::insertPackage('../${PKG_TARBALL}', '.')"
         git add src/contrib/
+        git add badges/
         git commit -m "Updated to ${PKG_NAME} ${PKG_VERSION} via GitHub Actions"
         git push -q https://jakejh:${{ inputs.personal-token }}@github.com/hugheylab/drat.git
       fi
