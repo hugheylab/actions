@@ -24,8 +24,9 @@ jobs:
 
       - id: run_lintr
         run: |
-          install.packages(c('data.table', 'gh', 'lintr'))
+          install.packages(c('data.table', 'gh', 'glue', 'lintr'))
 
+          library('glue')
           repository = '${{ github.event.repository.name }}'
           branch = system("echo ${BRANCH_NAME}", intern = TRUE)
 
@@ -36,22 +37,22 @@ jobs:
 
           library('gh')
           issuesGet = gh(
-            paste0('GET /repos/hugheylab/', repository, '/issues'),
+            glue('GET /repos/hugheylab/{repository}/issues'),
             labels = 'lint')
 
           if (length(issuesGet) > 0) {
             issuesPatch = gh(
-              paste0('PATCH /repos/hugheylab/', repository, '/issues/', issuesGet[[1]]$number),
+              glue('PATCH /repos/hugheylab/{repository}/issues/{issuesGet[[1L]]$number}'),
               state = 'closed')}
 
           if (nrow(lfDt) > 0) {
             issuesPost = gh(
-              endpoint = paste0('POST /repos/hugheylab/', repository, '/issues'),
-              title = "lintr found issues with code",
+              glue('POST /repos/hugheylab/{repository}/issues'),
+              title = 'lintr found issues with code',
               body = issueStr)
 
             labelsPost = gh(
-              endpoint = paste0('POST /repos/hugheylab/', repository, '/issues/', issuesPost$number, '/labels'),
+              glue('POST /repos/hugheylab/{repository}/issues/{issuesPost$number}/labels'),
               'lint')}
 
         shell: Rscript {0}
