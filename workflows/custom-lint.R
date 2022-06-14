@@ -78,7 +78,7 @@ getFormattedIssueStr = function(lfDt) {
     'To have lintr ignore any of these issues, add the appropriate lines of ',
     'those shown below to lint_ignore.csv at the top-level of the repository:',
     newlineEsc, '```', newlineEsc, tempCsvStr, newlineEsc, '```')
-  
+
   lintIgnore = getLintIgnore()
   lintIgnoreNotFound = lintIgnore[!lfDt, on = colnames(lintIgnore)]
 
@@ -101,16 +101,16 @@ if (!exists('repository')) {
   repository = substr(getwd(), dirIndexes[length(dirIndexes)] + 1, nchar(getwd()))}
 if (!exists('branch')) branch = 'main'
 
-newDefaults = with_defaults(
+newDefaults = linters_with_defaults(
   assignment_linter = NULL,
-  closed_curly_linter = NULL,
   commented_code_linter = NULL,
   cyclocomp_linter = NULL,
-  double_quotes_linter = doubleQuotesLinter,
+  double_quotes_linter = Linter(doubleQuotesLinter),
   line_length_linter(120),
   object_name_linter = object_name_linter('camelCase'),
-  open_curly_linter = open_curly_linter(TRUE),
-  single_quotes_linter = NULL)
+  brace_linter = NULL,
+  single_quotes_linter = NULL,
+  object_usage_linter = NULL)
 
 lintsFound = lint_dir(
   linters = newDefaults, pattern = rex('.', or(one_of('Rr'), 'Rmd'), end))
