@@ -18,7 +18,9 @@ runs:
       run: |
         install.packages('devtools')
         devtools::install(upgrade = 'always')
-        seeker::installSysDeps(refgenieGenomes = 'mm10/salmon_partial_sa_index')
+        seeker::installSysDeps(
+            sraToolkitDir = '~', minicondaDir = '~', refgenieDir = '~/refgenie_genomes',
+            rprofileDir = '~', refgenieGenomes = 'mm10/salmon_partial_sa_index')
       shell: Rscript {0}
 
     - name: Test coverage
