@@ -16,6 +16,7 @@ runs:
       with:
         extra-packages: any::pkgdown, local::.
         needs: website
+        pak-version: devel # https://github.com/r-lib/actions/issues/559
 
     - name: Build site
       run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
