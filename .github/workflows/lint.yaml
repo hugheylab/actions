@@ -1,18 +1,24 @@
-on: push
+on:
+  workflow_call:
 
 name: lint
 
 jobs:
-  lint_package:
+  lint:
     runs-on: ubuntu-latest
+
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+
     outputs:
         style_text: ${{ steps.run_lintr.outputs.style_text }}
         has_style_issues: ${{ steps.run_lintr.outputs.has_style_issues }}
+    
     timeout-minutes: 30
+    
     if: ${{ endswith(github.ref, '/master') || endswith(github.ref, '/main') }}
+
     steps:
       - uses: actions/checkout@v3
 
@@ -30,7 +36,7 @@ jobs:
           repository = '${{ github.event.repository.name }}'
           branch = system("echo ${BRANCH_NAME}", intern = TRUE)
 
-          source('https://raw.githubusercontent.com/hugheylab/actions/main/workflows/custom-lint.R')
+          source('https://raw.githubusercontent.com/hugheylab/actions/main/.github/workflows/custom-lint.R')
 
           lfDt = getLintDt(lintsFound, repository, branch)
           issueStr = getFormattedIssueStr(lfDt)
