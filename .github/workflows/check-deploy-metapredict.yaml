@@ -1,0 +1,191 @@
+# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
+# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+on:
+  workflow_call:
+
+name: check-deploy
+
+jobs:
+  R-CMD-check:
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: macos-latest, r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: ubuntu-latest, r: 'release'}
+          - {os: ubuntu-latest, r: 'oldrel-1'}
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
+
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.config.r }}
+          http-user-agent: ${{ matrix.config.http-user-agent }}
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
+          pak-version: devel # https://github.com/r-lib/actions/issues/559
+
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          upload-snapshots: true
+          args: "'--no-manual', '--as-cran', '--no-vignettes', '--no-build-vignettes', '--no-tests'"
+          build_args: "'--no-build-vignettes'"
+          error-on: "'error'"
+
+  drat-deployment:
+    needs: R-CMD-check
+    
+    runs-on: ubuntu-latest
+    
+    if: ${{ endswith(github.ref, '/master') || endswith(github.ref, '/main') }}
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          pak-version: devel # https://github.com/r-lib/actions/issues/559
+
+      - name: Download vignette folder
+        run: |
+          cd vignettes
+          wget "https://www.dropbox.com/s/gdrbmn38261dsy7/expression_data.tar.gz?dl=1"
+          mv expression_data.tar.gz?dl=1 expression_data.tar.gz
+          tar -xf expression_data.tar.gz
+          rm expression_data.tar.gz
+          cd ../
+        shell: bash
+
+      - name: Install CDF packages for vignettes
+        run: |
+          source("R/metapredict_utils.R")
+          installCustomCdfPackages(c("hgu95av2hsentrezgcdf", "hgu133plus2hsentrezgcdf"))
+        shell: Rscript {0}
+
+      - name: Build Package
+        run: |
+          R CMD build . --md5
+        shell: bash
+
+      - name: Set environmental variables
+        run: |
+          dsc = read.dcf('DESCRIPTION')
+          s = sprintf('echo \"PKG_VERSION=%s\nPKG_NAME=%s\nPKG_TARBALL=%s_%s.tar.gz\" >> ${GITHUB_ENV}',
+                      dsc[, 'Version'], dsc[, 'Package'], dsc[, 'Package'], dsc[, 'Version'])
+          system(s)
+        shell: Rscript {0}
+
+      - name: Checkout drat repo
+        uses: actions/checkout@v3
+        with:
+          repository: hugheylab/drat
+          path: drat
+          token: ${{ secrets.JAKEJH_PAT }}
+
+      - name: Check to deploy
+        run: |
+          cd drat
+          FILE=src/contrib/${PKG_TARBALL}
+          echo "File: ${FILE}."
+          DEPLOY=true
+          if test -f "${FILE}"
+          then
+            echo "Current version of package is on drat repo."
+            mkdir ../tmp_dir_new
+            tar xvzf "../${PKG_TARBALL}" -C ../tmp_dir_new/
+            sed -i '/DESCRIPTION$/d' ../tmp_dir_new/${PKG_NAME}/MD5
+            sed -i '/build\/.*$/d' ../tmp_dir_new/${PKG_NAME}/MD5
+            sed -i '/inst\/doc\/.*$/d' ../tmp_dir_new/${PKG_NAME}/MD5
+            MD5_FILE_NEW=$(cat ../tmp_dir_new/${PKG_NAME}/MD5)
+            echo "Current MD5: ${MD5_FILE_NEW}"
+            sed -i '/Packaged:/d' ../tmp_dir_new/${PKG_NAME}/DESCRIPTION
+            cd ../tmp_dir_new/
+            SHA_DESC_NEW=$(sha256sum ${PKG_NAME}/DESCRIPTION)
+            cd ../drat
+            mkdir ../tmp_dir_old
+            tar xvzf "../drat/src/contrib/${PKG_TARBALL}" -C ../tmp_dir_old/
+            echo "Checking for previous MD5 file."
+            MD5_FILE="../tmp_dir_old/${PKG_NAME}/MD5"
+            if test -f "${MD5_FILE}"
+            then
+              echo "Found previous MD5 file."
+              sed -i '/DESCRIPTION$/d' ../tmp_dir_old/${PKG_NAME}/MD5
+              sed -i '/build\/.*$/d' ../tmp_dir_old/${PKG_NAME}/MD5
+              sed -i '/inst\/doc\/.*$/d' ../tmp_dir_old/${PKG_NAME}/MD5
+              MD5_FILE_OLD=$(cat ../tmp_dir_old/${PKG_NAME}/MD5)
+              echo "Previous MD5: ${MD5_FILE_OLD}"
+              sed -i '/Packaged:/d' ../tmp_dir_old/${PKG_NAME}/DESCRIPTION
+              cd ../tmp_dir_old/
+              SHA_DESC_OLD=$(sha256sum ${PKG_NAME}/DESCRIPTION)
+              cd ../drat
+              echo "SHA_DESC_NEW: ${SHA_DESC_NEW}"
+              echo "SHA_DESC_OLD: ${SHA_DESC_OLD}"
+              cd ../tmp_dir_new
+              SHA_TARBALL_NEW=$(sha256sum ${PKG_NAME}/MD5)
+              echo "SHA_TARBALL_NEW: ${SHA_TARBALL_NEW}"
+              cd ../tmp_dir_old
+              SHA_TARBALL_OLD=$(sha256sum ${PKG_NAME}/MD5)
+              echo "SHA_TARBALL_OLD: ${SHA_TARBALL_OLD}"
+              cd ../drat
+              if [ "${SHA_TARBALL_OLD}" = "${SHA_TARBALL_NEW}" ] && [ "${SHA_DESC_NEW}" = "${SHA_DESC_OLD}" ]
+              then
+                echo "SHAs match, not deploying."
+                DEPLOY=false
+              else
+                echo "SHAs don't match, deploying."
+              fi
+            else
+              echo "No MD5 file found, deploying."
+            fi
+          else
+            echo "Current version of package is not on drat repo, deploying."
+          fi
+          if [ ${DEPLOY} = true ]
+          then
+            echo "Updating badge."
+            cd ../drat/badges
+            wget "https://img.shields.io/badge/hugheylab%20drat-${PKG_VERSION}-4c1.svg" -O "${PKG_NAME}_drat_badge.svg"
+            cd ../
+            echo "Deploying."
+            cd ../drat
+            git config --global user.email "jakejhughey@gmail.com"
+            git config --global user.name "Jake Hughey"
+            Rscript \
+              -e "install.packages('drat')" \
+              -e "drat::insertPackage('../${PKG_TARBALL}', '.')"
+            git add src/contrib/
+            git add badges/
+            git commit -m "Updated to ${PKG_NAME} ${PKG_VERSION} via GitHub Actions"
+            git push -q https://jakejh:${{ secrets.JAKEJH_PAT }}@github.com/hugheylab/drat.git
+          fi
+        shell: bash
+
