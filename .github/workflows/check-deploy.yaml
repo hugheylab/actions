@@ -86,7 +86,7 @@ jobs:
         with:
           repository: hugheylab/drat
           path: drat
-          token: ${{ secrets.JAKEJH_PAT }}
+          #token: ${{ secrets.JAKEJH_PAT }}
 
       - name: Check to deploy
         run: |
