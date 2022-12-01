@@ -49,39 +49,39 @@ runs:
       if test -f "${FILE}"
       then
         echo "Current version of package is on drat repo."
-        mkdir ../tmpDirNew
-        tar xvzf "../${PKG_TARBALL}" -C ../tmpDirNew/
-        sed -i '/DESCRIPTION$/d' ../tmpDirNew/${PKG_NAME}/MD5
-        sed -i '/build\/.*$/d' ../tmpDirNew/${PKG_NAME}/MD5
-        sed -i '/inst\/doc\/.*$/d' ../tmpDirNew/${PKG_NAME}/MD5
-        MD5_FILE_NEW=$(cat ../tmpDirNew/${PKG_NAME}/MD5)
+        mkdir ../tmp_dir_new
+        tar xvzf "../${PKG_TARBALL}" -C ../tmp_dir_new/
+        sed -i '/DESCRIPTION$/d' ../tmp_dir_new/${PKG_NAME}/MD5
+        sed -i '/build\/.*$/d' ../tmp_dir_new/${PKG_NAME}/MD5
+        sed -i '/inst\/doc\/.*$/d' ../tmp_dir_new/${PKG_NAME}/MD5
+        MD5_FILE_NEW=$(cat ../tmp_dir_new/${PKG_NAME}/MD5)
         echo "Current MD5: ${MD5_FILE_NEW}"
-        sed -i '/Packaged:/d' ../tmpDirNew/${PKG_NAME}/DESCRIPTION
-        cd ../tmpDirNew/
+        sed -i '/Packaged:/d' ../tmp_dir_new/${PKG_NAME}/DESCRIPTION
+        cd ../tmp_dir_new/
         SHA_DESC_NEW=$(sha256sum ${PKG_NAME}/DESCRIPTION)
         cd ../drat
-        mkdir ../tmpDirOld
-        tar xvzf "../drat/src/contrib/${PKG_TARBALL}" -C ../tmpDirOld/
+        mkdir ../tmp_dir_old
+        tar xvzf "../drat/src/contrib/${PKG_TARBALL}" -C ../tmp_dir_old/
         echo "Checking for previous MD5 file."
-        MD5_FILE="../tmpDirOld/${PKG_NAME}/MD5"
+        MD5_FILE="../tmp_dir_old/${PKG_NAME}/MD5"
         if test -f "${MD5_FILE}"
         then
           echo "Found previous MD5 file."
-          sed -i '/DESCRIPTION$/d' ../tmpDirOld/${PKG_NAME}/MD5
-          sed -i '/build\/.*$/d' ../tmpDirOld/${PKG_NAME}/MD5
-          sed -i '/inst\/doc\/.*$/d' ../tmpDirOld/${PKG_NAME}/MD5
-          MD5_FILE_OLD=$(cat ../tmpDirOld/${PKG_NAME}/MD5)
+          sed -i '/DESCRIPTION$/d' ../tmp_dir_old/${PKG_NAME}/MD5
+          sed -i '/build\/.*$/d' ../tmp_dir_old/${PKG_NAME}/MD5
+          sed -i '/inst\/doc\/.*$/d' ../tmp_dir_old/${PKG_NAME}/MD5
+          MD5_FILE_OLD=$(cat ../tmp_dir_old/${PKG_NAME}/MD5)
           echo "Previous MD5: ${MD5_FILE_OLD}"
-          sed -i '/Packaged:/d' ../tmpDirOld/${PKG_NAME}/DESCRIPTION
-          cd ../tmpDirOld/
+          sed -i '/Packaged:/d' ../tmp_dir_old/${PKG_NAME}/DESCRIPTION
+          cd ../tmp_dir_old/
           SHA_DESC_OLD=$(sha256sum ${PKG_NAME}/DESCRIPTION)
           cd ../drat
           echo "SHA_DESC_NEW: ${SHA_DESC_NEW}"
           echo "SHA_DESC_OLD: ${SHA_DESC_OLD}"
-          cd ../tmpDirNew
+          cd ../tmp_dir_new
           SHA_TARBALL_NEW=$(sha256sum ${PKG_NAME}/MD5)
           echo "SHA_TARBALL_NEW: ${SHA_TARBALL_NEW}"
-          cd ../tmpDirOld
+          cd ../tmp_dir_old
           SHA_TARBALL_OLD=$(sha256sum ${PKG_NAME}/MD5)
           echo "SHA_TARBALL_OLD: ${SHA_TARBALL_OLD}"
           cd ../drat
