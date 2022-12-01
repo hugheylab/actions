@@ -61,8 +61,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.JAKEJH_PAT }}
 
       - uses: r-lib/actions/setup-pandoc@v2
 
