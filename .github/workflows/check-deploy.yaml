@@ -53,6 +53,7 @@ jobs:
     if: ${{ endswith(github.ref, '/master') || endswith(github.ref, '/main') }}
     env:
       GITHUB_PAT: ${{ secrets.JAKEJH_PAT }}
+    
     timeout-minutes: 30
 
     steps:
@@ -86,7 +87,7 @@ jobs:
         with:
           repository: hugheylab/drat
           path: drat
-          #token: ${{ secrets.JAKEJH_PAT }}
+          token: ${{ env.GITHUB_PAT }}
 
       - name: Check to deploy
         run: |
@@ -162,7 +163,7 @@ jobs:
             git add src/contrib/
             git add badges/
             git commit -m "Updated to ${PKG_NAME} ${PKG_VERSION} via GitHub Actions"
-            git push -q https://jakejh:${{ secrets.JAKEJH_PAT }}@github.com/hugheylab/drat.git
+            git push -q https://jakejh:${{ env.GITHUB_PAT }}@github.com/hugheylab/drat.git
           fi
         shell: bash
 
