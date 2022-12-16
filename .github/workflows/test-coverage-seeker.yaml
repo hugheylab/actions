@@ -25,8 +25,8 @@ jobs:
 
       - name: Set up environment
         run: |
-          #install.packages('devtools')
-          #devtools::install(upgrade = 'always')
+          install.packages('devtools')
+          devtools::install(upgrade = 'always')
           BiocManager::install('preprocessCore', configure.args = '--disable-threading', force = TRUE)
           seeker::installSysDeps(
               sraToolkitDir = '~', minicondaDir = '~', refgenieDir = '~',
