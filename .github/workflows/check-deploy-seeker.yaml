@@ -48,6 +48,7 @@ jobs:
         run: |
           install.packages('devtools')
           devtools::install(upgrade = 'always')
+          BiocManager::install('preprocessCore', configure.args = '--disable-threading', force = TRUE)
           seeker::installSysDeps(
               sraToolkitDir = '~', minicondaDir = '~', refgenieDir = '~',
               rprofileDir = '~', refgenieGenomes = 'mm10/salmon_partial_sa_index')
